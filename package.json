@@ -1,11 +1,8 @@
 {
-  "name": "translate-cli",
+  "name": "@owowagency/translate-cli",
   "version": "1.0.0",
   "description": "CLI tool to work with translations",
-  "main": "index.js",
-  "repository": "https://github.com/owowagency/translate-cli",
-  "author": "OWOW",
-  "license": "MIT",
+  "private": true,
   "scripts": {
     "build": "npx tsc",
     "translate": "node ./dist/index.js"
