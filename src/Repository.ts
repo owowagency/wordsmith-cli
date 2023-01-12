@@ -1,8 +1,6 @@
 import axios from "axios";
-import {Config} from "./config";
-
-const fs = require("fs");
-const _ = require('lodash');
+import {Config} from "./Config";
+import {TranslationCollection} from "./TranslationCollection";
 
 export class Repository {
 
@@ -18,31 +16,25 @@ export class Repository {
         if (! config.isPathValid()) {
             throw new Error("Invalid translations directory: " + config.get('client.translations_directory'));
         }
-
-
     }
 
     async pull(): Promise<void> {
-        let projectTranslations: Object[] = await this.getProjectTranslations();
+        let rawProjectTranslations: Object[] = await this.getRawProjectTranslations();
 
-        let a = 2;
+        let translationCollection: TranslationCollection = new TranslationCollection(rawProjectTranslations);
     }
 
-    private async getProjectTranslations(): Promise<Object[]> {
-        let translations: Object[] = [];
+    private async getRawProjectTranslations(): Promise<Object[]> {
+        let data: Object[] = [];
 
         try {
-            const {data} = await axios.get('http://localhost:8000/projects/1/translations');
+            const response = await axios.get('http://localhost:8000/projects/1/translations');
 
-            if (! _.isEmpty(data)) {
-                data.data.forEach((translation: any) => {
-                    translations.push(translation);
-                });
-            }
+            data = response.data.data;
         } catch (error) {
             console.error('Error fetching translations: ' + error);
         }
 
-        return translations;
+        return data;
     }
 }

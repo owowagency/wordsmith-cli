@@ -1,13 +1,12 @@
-const _ = require('lodash');
 const { program } = require("commander");
 const packageJson = require('../package.json');
 
-import { Repository } from "./repository";
-import { Config } from './config';
+import { Repository } from "./Repository";
+import { Config } from './Config';
 
 let config = new Config();
 
-let repository = new Repository(config.get('client.translations_directory'));
+let repository = new Repository(config);
 
 program
     .name(config.get('cli.name'))
