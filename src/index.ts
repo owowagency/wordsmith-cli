@@ -1,9 +1,13 @@
+const _ = require('lodash');
 const { program } = require("commander");
 const packageJson = require('../package.json');
 
+import { Repository } from "./repository";
 import { Config } from './config';
 
 let config = new Config();
+
+let repository = new Repository(config.get('client.translations_directory'));
 
 program
     .name(config.get('cli.name'))
@@ -13,6 +17,11 @@ program
     .option('-id, --project-id <id>', 'Set the ID of the project that will be used for translations')
     .option('-d, --translations-directory <directory>', 'Set the directory where the translations will be stored')
     .option('-t --tags <tags>', 'Set the tags that will be used to filter the translations');
+
+program
+    .command('pull')
+    .description('Pull translations from the repository')
+    .action(() => repository.pull());
 
 program.parse(process.argv);
 

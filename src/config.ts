@@ -1,8 +1,11 @@
+import fs from "fs";
+
 const { readFileSync, writeFileSync } = require('fs');
 const pathLib = require('path');
 const _ = require('lodash');
 
 export class Config {
+
     readonly path: string = pathLib.join(__dirname, '..', 'config.json');
 
     data: any;
@@ -37,5 +40,11 @@ export class Config {
             && this.get('client.project_id') !== undefined
             && this.get('client.translations_directory') !== undefined
             && this.get('client.tags') !== undefined;
+    }
+
+    isPathValid(): boolean {
+        let path = this.get('client.translations_directory');
+
+        return path !== undefined && fs.existsSync(path);
     }
 }

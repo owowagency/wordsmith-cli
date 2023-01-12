@@ -2,7 +2,7 @@
   "client": {
     "api_token": "my_me_my",
     "project_id": "69696996969696",
-    "translations_directory": "test",
+    "translations_directory": "/Users/pauliusmikalajunas/Documents/translate-cli/repository",
     "tags": "test,1,2"
   },
   "cli": {
