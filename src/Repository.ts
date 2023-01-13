@@ -48,7 +48,7 @@ export class Repository {
         let success: boolean = false;
 
         try {
-            const response = await axios.post('http://localhost:8000/projects/1/translations', {'translations': translationsJson});
+            const response = await axios.post('http://localhost:8000/projects/2/translations', {'translations': translationsJson});
 
             success = response.status === 200;
         } catch (error) {
@@ -64,7 +64,7 @@ export class Repository {
         try {
             // TODO: get rid of the constant
             // TODO: attach tags to the request
-            const response = await axios.get('http://localhost:8000/projects/1/translations');
+            const response = await axios.get('http://localhost:8000/projects/2/translations');
 
             data = response.data.data;
         } catch (error) {
