@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor creates translation from a response object 1`] = `
+Translation {
+  "_key": "promiscuous girl",
+  "_values": [
+    TranslationValue {
+      "language": "NL",
+      "value": "promiscue meisje",
+    },
+    TranslationValue {
+      "language": "RU",
+      "value": "распутная девчонка",
+    },
+    TranslationValue {
+      "language": "LT",
+      "value": "pasileidusi mergina",
+    },
+  ],
+}
+`;

@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor creates translation collection from a response object 1`] = `
+TranslationCollection {
+  "translations": [
+    Translation {
+      "_key": "promiscuous girl",
+      "_values": [
+        TranslationValue {
+          "language": "NL",
+          "value": "promiscue meisje",
+        },
+        TranslationValue {
+          "language": "LT",
+          "value": "pasileidusi mergina",
+        },
+      ],
+    },
+    Translation {
+      "_key": "bladee",
+      "_values": [
+        TranslationValue {
+          "language": "NL",
+          "value": "Waylon",
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`toJson returns json with translations for each language 1`] = `
+{
+  "bladee": "Waylon",
+  "promiscuous girl": "promiscue meisje",
+}
+`;
+
+exports[`toJson returns json with translations for each language 2`] = `
+{
+  "promiscuous girl": "pasileidusi mergina",
+}
+`;

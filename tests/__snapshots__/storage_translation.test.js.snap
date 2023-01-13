@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor creates storage translation from translations json 1`] = `
+StorageTranslation {
+  "_language": "LT",
+  "translationValues": [
+    StorageTranslationValue {
+      "key": "promiscuous girl",
+      "value": "pasileidusi mergina",
+    },
+    StorageTranslationValue {
+      "key": "bladee",
+      "value": "Dzordana Butkute",
+    },
+  ],
+}
+`;
+
+exports[`constructor creates storage translation from translations json 2`] = `
+StorageTranslation {
+  "_language": "NL",
+  "translationValues": [
+    StorageTranslationValue {
+      "key": "promiscuous girl",
+      "value": "promiscue meisje",
+    },
+    StorageTranslationValue {
+      "key": "bladee",
+      "value": "Waylon",
+    },
+  ],
+}
+`;

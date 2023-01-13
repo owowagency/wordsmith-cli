@@ -28,3 +28,7 @@ test('getTranslationResponseObject returns translation response for a given key'
 
     expect(storageTranslationCollection.getTranslationResponseObject("bladee")).toMatchSnapshot();
 });
+
+test('toJson returns json with translations for each language', () => {
+    expect(storageTranslationCollection.toJson()).toMatchSnapshot();
+});

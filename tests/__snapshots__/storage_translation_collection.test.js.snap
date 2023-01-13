@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getTranslationResponseObject returns translation response for a given key 1`] = `
+{
+  "key": "promiscuous girl",
+  "translationValues": [
+    {
+      "language": "LT",
+      "value": "pasileidusi mergina",
+    },
+    {
+      "language": "NL",
+      "value": "promiscue meisje",
+    },
+  ],
+}
+`;
+
+exports[`getTranslationResponseObject returns translation response for a given key 2`] = `
+{
+  "key": "bladee",
+  "translationValues": [
+    {
+      "language": "LT",
+      "value": "Dzordana Butkute",
+    },
+    {
+      "language": "NL",
+      "value": "Waylon",
+    },
+  ],
+}
+`;
+
+exports[`toJson returns json with translations for each language 1`] = `
+[
+  {
+    "key": "promiscuous girl",
+    "translationValues": [
+      {
+        "language": "LT",
+        "value": "pasileidusi mergina",
+      },
+      {
+        "language": "NL",
+        "value": "promiscue meisje",
+      },
+    ],
+  },
+  {
+    "key": "bladee",
+    "translationValues": [
+      {
+        "language": "LT",
+        "value": "Dzordana Butkute",
+      },
+      {
+        "language": "NL",
+        "value": "Waylon",
+      },
+    ],
+  },
+]
+`;
