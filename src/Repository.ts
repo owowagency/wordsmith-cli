@@ -36,6 +36,26 @@ export class Repository {
         let storageTranslationCollection: StorageTranslationCollection = storage.readTranslations();
 
         let translationsJson = storageTranslationCollection.toJson();
+
+        let success: boolean = await this.sendRawProjectTranslations(translationsJson);
+
+        if (! success) {
+            throw new Error("Error sending translations to the server.");
+        }
+    }
+
+    private async sendRawProjectTranslations(translationsJson: Object[]): Promise<boolean> {
+        let success: boolean = false;
+
+        try {
+            const response = await axios.post('http://localhost:8000/projects/1/translations', {'translations': translationsJson});
+
+            success = response.status === 200;
+        } catch (error) {
+            console.error('Error sending translations: ' + error);
+        }
+
+        return success;
     }
 
     private async getRawProjectTranslations(): Promise<Object[]> {
