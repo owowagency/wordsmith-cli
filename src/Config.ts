@@ -23,6 +23,7 @@ export class Config {
         }
     }
 
+    // TODO: split tags on comma
     get(key: string): any {
         return _.get(this.data, key);
     }

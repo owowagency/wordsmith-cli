@@ -22,6 +22,11 @@ program
     .description('Pull translations from the repository')
     .action(() => repository.pull());
 
+program
+    .command('push')
+    .description('Push translations to the repository')
+    .action(() => repository.push());
+
 program.parse(process.argv);
 
 const options = program.opts();

@@ -4,12 +4,11 @@
 export class Translation {
 
     private readonly _key: string;
-    private readonly _tags: string[];
+
     private readonly _values: TranslationValue[];
 
     constructor(responseObject: any) {
-        this._key = responseObject._key;
-        this._tags = responseObject._tags;
+        this._key = responseObject.key;
         this._values = responseObject.translationValues.map((translation: any) => {
             return new TranslationValue(translation);
         });
@@ -17,6 +16,10 @@ export class Translation {
 
     get values(): TranslationValue[] {
         return this._values;
+    }
+
+    get key(): string {
+        return this._key;
     }
 }
 

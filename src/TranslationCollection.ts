@@ -20,4 +20,19 @@ export class TranslationCollection {
         return Array.from(languageSet);
     }
 
+    getTranslationsForLanguage(language: string): Translation[] {
+        return this.translations.filter((translation: Translation) => {
+            return translation.values.some(v => v.language === language);
+        });
+    }
+
+    toJson(language: string): any {
+        return this.getTranslationsForLanguage(language)
+            .reduce((translations: Record<string, any>, translation: Translation) => {
+                translations[translation.key] = translation.values.find(v => v.language === language)?.value;
+
+                return translations;
+            }, {}
+        );
+    }
 }

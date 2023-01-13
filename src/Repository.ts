@@ -1,6 +1,8 @@
 import axios from "axios";
 import {Config} from "./Config";
 import {TranslationCollection} from "./TranslationCollection";
+import {Storage} from "./Storage";
+import {StorageTranslationCollection} from "./StorageTranslationCollection";
 
 export class Repository {
 
@@ -22,12 +24,26 @@ export class Repository {
         let rawProjectTranslations: Object[] = await this.getRawProjectTranslations();
 
         let translationCollection: TranslationCollection = new TranslationCollection(rawProjectTranslations);
+
+        let storage: Storage = new Storage(this.config.get('client.translations_directory'));
+
+        storage.writeTranslationsForAllLanguages(translationCollection);
+    }
+
+    async push(): Promise<void> {
+        let storage: Storage = new Storage(this.config.get('client.translations_directory'));
+
+        let storageTranslationCollection: StorageTranslationCollection = storage.readTranslations();
+
+        let translationsJson = storageTranslationCollection.toJson();
     }
 
     private async getRawProjectTranslations(): Promise<Object[]> {
         let data: Object[] = [];
 
         try {
+            // TODO: get rid of the constant
+            // TODO: attach tags to the request
             const response = await axios.get('http://localhost:8000/projects/1/translations');
 
             data = response.data.data;
