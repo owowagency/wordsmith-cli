@@ -4,7 +4,7 @@
 `yarn install`
 
 ## Build
-2. `yarn build`
+`yarn build`
 
 ## Config
 Edit `config.json` to configure the CLI.

@@ -1,7 +1,7 @@
 import {TranslationCollection} from "./TranslationCollection";
 import {StorageTranslation} from "./StorageTranslation";
 import {StorageTranslationCollection} from "./StorageTranslationCollection";
-const { readFileSync, writeFileSync, readdirSync } = require('fs');
+import { readFileSync, writeFileSync, readdirSync } from 'fs';
 
 export class Storage {
 
@@ -11,8 +11,6 @@ export class Storage {
         this.path = path;
     }
 
-    // TODO: whenever configuration changes, storage contents should be diverted to the new location
-    // because project id and tags might have changed, which will invalidate translations
     public writeTranslations(language: string, translationCollection: TranslationCollection): void {
         let translationsJson = translationCollection.toJson(language);
 

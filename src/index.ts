@@ -9,7 +9,7 @@ let config = new Config();
 let repository = new Repository(config);
 
 program
-    .name(config.get('cli.name'))
+    .name('translate')
     .description(packageJson.description)
     .version(packageJson.version)
     .option('-token, --api-token <token>', 'Set the token used to authenticate with the API')
@@ -31,13 +31,13 @@ program.parse(process.argv);
 
 const options = program.opts();
 
-if (options.apiToken) { config.set('client.api_token', options.apiToken); }
+if (options.apiToken) { config.set('api_token', options.apiToken); }
 
-if (options.projectId) { config.set('client.project_id', options.projectId); }
+if (options.projectId) { config.set('project_id', options.projectId); }
 
-if (options.translationsDirectory) { config.set('client.translations_directory', options.translationsDirectory); }
+if (options.translationsDirectory) { config.set('translations_directory', options.translationsDirectory); }
 
-if (options.tags) { config.set('client.tags', options.tags); }
+if (options.tags) { config.set('tags', options.tags); }
 
 if (! config.isConfigured()) {
     console.log("Please configure the CLI before using it.");

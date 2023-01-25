@@ -16,20 +16,20 @@ const storageLithuanianTranslations = new StorageTranslation("LT", storageLithua
 const storageDutchTranslations = new StorageTranslation("NL", storageDutchTranslationsJson);
 
 test('constructor creates storage translation from translations json', () => {
-        expect(storageLithuanianTranslations).toMatchSnapshot();
+    expect(storageLithuanianTranslations).toMatchSnapshot();
 
-        expect(storageDutchTranslations).toMatchSnapshot();
+    expect(storageDutchTranslations).toMatchSnapshot();
 });
 
 test('keys returns all keys', () => {
-        expect(storageLithuanianTranslations.keys()).toEqual(["promiscuous girl", "bladee"]);
+    expect(storageLithuanianTranslations.keys()).toEqual(["promiscuous girl", "bladee"]);
 });
 
 test('get translation value returns translation value for a given key', () => {
-        expect(storageLithuanianTranslations.getTranslationValue("promiscuous girl"))
-            .toEqual("pasileidusi mergina");
+    expect(storageLithuanianTranslations.getTranslationValue("promiscuous girl"))
+        .toEqual("pasileidusi mergina");
 
-        expect(storageDutchTranslations.getTranslationValue("promiscuous girl"))
-            .toEqual("promiscue meisje");
+    expect(storageDutchTranslations.getTranslationValue("promiscuous girl"))
+        .toEqual("promiscue meisje");
 });
 

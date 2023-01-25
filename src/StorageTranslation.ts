@@ -21,7 +21,6 @@ export class StorageTranslation {
         return translationValue?.value;
     }
 
-
     get language(): string {
         return this._language;
     }
