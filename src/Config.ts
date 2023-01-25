@@ -37,14 +37,14 @@ export class Config {
     }
 
     isConfigured(): boolean {
-        return this.get('client.api_token') !== undefined
-            && this.get('client.project_id') !== undefined
-            && this.get('client.translations_directory') !== undefined
-            && this.get('client.tags') !== undefined;
+        return this.get('api_token') !== undefined
+            && this.get('project_id') !== undefined
+            && this.get('translations_directory') !== undefined
+            && this.get('tags') !== undefined;
     }
 
     isPathValid(): boolean {
-        let path = this.get('client.translations_directory');
+        let path = this.get('translations_directory');
 
         return path !== undefined && fs.existsSync(path);
     }

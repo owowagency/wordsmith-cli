@@ -1,8 +1,5 @@
 import axios from "axios";
 import {Config} from "./Config";
-import {TranslationCollection} from "./TranslationCollection";
-import {Storage} from "./Storage";
-import {StorageTranslationCollection} from "./StorageTranslationCollection";
 
 export class Repository {
 
@@ -14,37 +11,9 @@ export class Repository {
         if (! config || ! config.isConfigured()) {
             throw new Error("Please configure the CLI before using it.");
         }
-
-        if (! config.isPathValid()) {
-            throw new Error("Invalid translations directory: " + config.get('client.translations_directory'));
-        }
     }
 
-    async pull(): Promise<void> {
-        let rawProjectTranslations: Object[] = await this.getRawProjectTranslations();
-
-        let translationCollection: TranslationCollection = new TranslationCollection(rawProjectTranslations);
-
-        let storage: Storage = new Storage(this.config.get('client.translations_directory'));
-
-        storage.writeTranslationsForAllLanguages(translationCollection);
-    }
-
-    async push(): Promise<void> {
-        let storage: Storage = new Storage(this.config.get('client.translations_directory'));
-
-        let storageTranslationCollection: StorageTranslationCollection = storage.readTranslations();
-
-        let translationsJson = storageTranslationCollection.toJson();
-
-        let success: boolean = await this.sendRawProjectTranslations(translationsJson);
-
-        if (! success) {
-            throw new Error("Error sending translations to the server.");
-        }
-    }
-
-    private async sendRawProjectTranslations(translationsJson: Object[]): Promise<boolean> {
+    async sendRawProjectTranslations(translationsJson: Object[]): Promise<boolean> {
         let success: boolean = false;
 
         try {
@@ -58,7 +27,7 @@ export class Repository {
         return success;
     }
 
-    private async getRawProjectTranslations(): Promise<Object[]> {
+    async getRawProjectTranslations(): Promise<Object[]> {
         let data: Object[] = [];
 
         try {
