@@ -1,0 +1,15 @@
+{
+    "extends": [
+        "@antfu/eslint-config-react"
+    ],
+    "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "sourceType": "module"
+    },
+    "rules": {
+        "eol-last": "error",
+        "indent": ["error", 4, {"SwitchCase": 1}],
+        "@typescript-eslint/indent": ["error", 4, {"SwitchCase": 1}],
+        "@typescript-eslint/semi": ["error", "always"]
+    }
+}
