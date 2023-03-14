@@ -1,4 +1,4 @@
 // entry point
-import { test } from '@/command';
+import { test } from './commands/pull.js';
 
 test();

@@ -1,15 +1,85 @@
 {
     "extends": [
-        "@antfu/eslint-config-react"
+        "plugin:@typescript-eslint/recommended",
     ],
     "parserOptions": {
         "parser": "@typescript-eslint/parser",
         "sourceType": "module"
     },
+    "plugins": [
+        "unused-imports"
+    ],
     "rules": {
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-empty-interface": [
+            "error",
+            {
+                "allowSingleExtends": true
+            }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "array-bracket-spacing": [
+            "error",
+            "never"
+        ],
+        "brace-style": "error",
+        "comma-dangle": [
+            "error",
+            "always-multiline"
+        ],
+        "comma-spacing": "error",
+        "curly": [
+            "error",
+            "all"
+        ],
         "eol-last": "error",
-        "indent": ["error", 4, {"SwitchCase": 1}],
-        "@typescript-eslint/indent": ["error", 4, {"SwitchCase": 1}],
-        "@typescript-eslint/semi": ["error", "always"]
-    }
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "no-duplicate-imports": "error",
+        "no-multi-spaces": "error",
+        "no-param-reassign": "error",
+        "no-trailing-spaces": "error",
+        "object-curly-spacing": [
+            "error",
+            "never"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "sort-imports": "error",
+        "space-before-function-paren": [
+            "error",
+            "never"
+        ],
+        "space-in-parens": "error",
+        "space-infix-ops": "error",
+        "space-unary-ops": "error",
+        "spaced-comment": "error",
+        "unused-imports/no-unused-imports-ts": "error",
+        "vue/html-indent": [
+            "error",
+            4
+        ],
+        "vue/multi-word-component-names": "off"
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/*.test.ts"
+            ],
+            "env": {
+                "jest": true
+            }
+        }
+    ]
 }
