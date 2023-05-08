@@ -1,28 +1,23 @@
 {
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
-    "composite": true,
-    "target": "esnext",
-    "useDefineForClassFields": true,
-    "module": "esnext",
-    "lib": ["esnext", "DOM"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "sourceMap": true,
-    "paths": {
-      "@/*": [
-        "src/*"
-      ],
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "outDir": "bin",
+        "resolveJsonModule": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ],
+        },
     },
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-  },
-  "include": ["src/**/*"]
+    "exclude": [
+        "node_modules",
+        "tests"
+    ]
 }

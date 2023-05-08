@@ -1,18 +1,32 @@
+import path from 'node:path';
 import { defineConfig } from 'vite';
-import path from 'path';
-import pkg from './package.json';
 
 export default defineConfig({
+    // import.meta.env values are statically replaced at build time
     resolve: {
         alias: {
-          '@': path.resolve('./src'),
+            '@': path.resolve('./src'),
         },
     },
     build: {
+        target: 'es6',
+        outDir: 'build',
+        ssr: true,
         lib: {
-            entry: 'src/main.ts',
-            formats: ['umd'],
-            name: pkg.name,
+            entry: './src/main.ts',
+            formats: ['es'],
+            fileName: format => '[name].js',
+        },
+        rollupOptions: {
+            // input,
+            external: ['chalk'],
+            output: {
+                inlineDynamicImports: false,
+                preserveModules: true,
+                preserveModulesRoot: 'src',
+            },
         },
     },
+    plugins: [],
+    // test: {},
 });
