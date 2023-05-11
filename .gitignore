@@ -14,6 +14,7 @@ dist-ssr
 tsconfig.tsbuildinfo
 lang
 bin
+.env
 
 # Editor directories and files
 .vscode
