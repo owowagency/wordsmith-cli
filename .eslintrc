@@ -1,10 +1,6 @@
 {
-    "extends": "@antfu",
+    "extends": "@owowagency/eslint-config-ts",
     "rules": {
-        "@typescript-eslint/indent": ["error", 4, {"SwitchCase": 1}],
-        "@typescript-eslint/semi": ["error", "always"],
-        "@typescript-eslint/no-inferrable-types": "off",
-        "curly": ["error", "all"],
         "no-console": "off"
     }
 }

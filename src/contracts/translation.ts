@@ -1,10 +1,12 @@
 import type { ParsedPath } from 'node:path';
 import path from 'node:path';
 import fs from 'node:fs';
-import FormData from 'form-data';
 import fg from 'fast-glob';
+import FormData from 'form-data';
+import fetch from 'node-fetch';
 import type HttpClient from '@/contracts/client';
-import Axios from '@/clients/axios';
+import Fetch from '@/clients/fetch';
+import type { PushOptions } from '@/commands/push';
 
 export abstract class TranslatableContract {
     public configFilename = process.env.CONFIG_FILE || '' as const;
@@ -21,19 +23,15 @@ export abstract class TranslatableContract {
 
     abstract get langs(): string[];
 
-    abstract pull(languages?: string, tags?: string): Promise<Translation[]>;
+    abstract pull(language: string): Promise<boolean>;
 
-    abstract push(data: BinaryData, file: string): Promise<unknown>;
-
-    abstract serialize(records: TranslatableRecord[]): string;
-
-    abstract deserialize(content: string): TranslatableRecord[];
+    abstract push(data: ParsedPath, options?: PushOptions): Promise<boolean>;
 
     protected abstract client: HttpClient;
 }
 
 export default abstract class Translatable extends TranslatableContract {
-    client = new Axios(this.config);
+    client = new Fetch(this.config);
 
     get hasConfig() {
         return fs.existsSync(path.resolve(this.configFilename));
@@ -46,8 +44,7 @@ export default abstract class Translatable extends TranslatableContract {
             const config = JSON.parse(content.toString());
 
             return config as Config;
-        }
-        catch {
+        } catch {
             return {
                 apiKey: '',
                 exportType: '',
@@ -72,20 +69,44 @@ export default abstract class Translatable extends TranslatableContract {
         return [...new Set(this.files.map(file => file.name))];
     }
 
-    pull(languages?: string, tags?: string) {
-        return this.client.get<{ data: Translation[] }>(`projects/${this.config.projectId}/translations/pull`, {
-            'filters[tags.name]': tags,
-            'filters[translation_values.language]': languages,
-        }).then(response => response.data);
+    async pull(language: string): Promise<boolean> {
+        const response = await this.client.get(`projects/${this.config.projectId}/translations/pull`, {
+            language,
+            fileType: this.extension,
+        });
+
+        if (response.ok) {
+            const data = await response.json() as { url: string; fileName: string };
+
+            const res = await fetch(data.url);
+
+            const fileStream = fs.createWriteStream(path.resolve(`${this.config.langDir}/${data.fileName}`));
+
+            return new Promise((resolve, reject) => {
+                res.body.pipe(fileStream);
+
+                res.body.on('error', reject);
+
+                fileStream.on('finish', () => resolve(true));
+            });
+        }
+
+        return false;
     }
 
-    push(data: BinaryData, file: string) {
+    async push(file: ParsedPath, options?: Omit<PushOptions, 'languages'>) {
         const formData = new FormData();
 
-        formData.append('data', data, file);
+        const filename = `${file.name}${file.ext}`;
 
-        return this.client.post(`projects/${this.config.projectId}/translations/push`, formData, {
-            'Content-Type': 'multipart/form-data',
-        });
+        formData.append('file', fs.createReadStream(path.resolve(file.dir, filename)), filename);
+        formData.append('fileType', this.extension);
+        formData.append('language', file.name);
+        formData.append('overwrite_existing_values', +(options?.overwrite !== undefined ? options.overwrite : true));
+        formData.append('verify_translations', +(options?.verify !== undefined ? options.verify : true));
+
+        const response = await this.client.post(`/projects/${this.config.projectId}/translations/push`, formData);
+
+        return response.ok && response.status === 204;
     }
 }
