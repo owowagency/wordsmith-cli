@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import type { Command } from 'commander';
 import { verifyConfigFile } from '@/misc/actions';
-import JSONFormat from '@/formats/json';
+import JSONExtension from '@/extensions/json';
 
 interface PullOptionas {
     languages: string
@@ -18,13 +18,13 @@ export default <SubCommand>{
             .action(async ({ languages }: PullOptionas) => {
                 verifyConfigFile();
 
-                // @todo: for now we only have one formatter, we can get correct formatter from type for later
-                const formatter = new JSONFormat();
+                // @todo: for now we only have one extension / supported type
+                const jsonExtension = new JSONExtension();
 
-                const langs = languages.split(',').map(item => item.trim()).filter(item => !item);
+                const langs = languages.split(',').map(item => item.trim()).filter(item => !!item);
 
                 for (const language of langs) {
-                    const isSuccess = await formatter.pull(language);
+                    const isSuccess = await jsonExtension.pull(language);
 
                     if (isSuccess) {
                         console.log(chalk.blueBright(`[${language.toUpperCase()}]`), 'pulled successfully');

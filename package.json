@@ -1,5 +1,5 @@
 {
-    "name": "translate-cli",
+    "name": "wordsmith-cli",
     "version": "1.0.0",
     "type": "module",
     "description": "Wordsmit Translate Tool",
@@ -17,7 +17,7 @@
         "test:watch": "vitest -w"
     },
     "bin": {
-        "translate-cli": "./bin/main.cjs"
+        "wordsmith-cli": "./bin/main.cjs"
     },
     "devDependencies": {
         "@owowagency/eslint-config-ts": "^0.1.4",
