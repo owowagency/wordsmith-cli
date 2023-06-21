@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import chalk from 'chalk';
 import { verifyConfigFile } from '@/misc/actions';
-import JSONFormat from '@/formats/json';
+import JSONExtension from '@/extensions/json';
 
 export interface PushOptions {
     languages?: string
@@ -19,17 +19,17 @@ export default <SubCommand>{
             .action(async (options: PushOptions) => {
                 verifyConfigFile();
 
-                // @todo: for now we only have one formatter, we can get correct formatter from type for later
-                const formatter = new JSONFormat();
+                // @todo: for now we only have one extension / supported type
+                const jsonExtension = new JSONExtension();
 
-                const files = formatter.files.filter(
+                const files = jsonExtension.files.filter(
                     item => options.languages
                         ? options.languages?.split(',').map(item => item.trim()).includes(item.name)
                         : true,
                 );
 
                 for (const file of files) {
-                    const isSuccess = await formatter.push(file);
+                    const isSuccess = await jsonExtension.push(file);
 
                     if (isSuccess) {
                         console.log(chalk.blueBright(`[${file.name.toUpperCase()}]`), 'pushed successfully');

@@ -1,6 +1,7 @@
 {
     "extends": "@owowagency/eslint-config-ts",
     "rules": {
+        // CLI tool needs print to console so no-console turned off.
         "no-console": "off"
     }
 }
