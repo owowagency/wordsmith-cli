@@ -21,7 +21,7 @@ export default <SubCommand>{
                 // @todo: for now we only have one formatter, we can get correct formatter from type for later
                 const formatter = new JSONFormat();
 
-                const langs = languages.split(',').map(item => item.trim()).filter(item => !item);
+                const langs = languages.split(',').map(item => item.trim()).filter(item => item);
 
                 for (const language of langs) {
                     const isSuccess = await formatter.pull(language);

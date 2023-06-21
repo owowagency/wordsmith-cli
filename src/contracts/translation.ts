@@ -72,7 +72,7 @@ export default abstract class Translatable extends TranslatableContract {
     async pull(language: string): Promise<boolean> {
         const response = await this.client.get(`projects/${this.config.projectId}/translations/pull`, {
             language,
-            fileType: this.extension,
+            fileType: this.config.importType,
         });
 
         if (response.ok) {
@@ -100,7 +100,7 @@ export default abstract class Translatable extends TranslatableContract {
         const filename = `${file.name}${file.ext}`;
 
         formData.append('file', fs.createReadStream(path.resolve(file.dir, filename)), filename);
-        formData.append('fileType', this.extension);
+        formData.append('fileType', this.config.exportType);
         formData.append('language', file.name);
         formData.append('overwrite_existing_values', +(options?.overwrite !== undefined ? options.overwrite : true));
         formData.append('verify_translations', +(options?.verify !== undefined ? options.verify : true));
