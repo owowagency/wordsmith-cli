@@ -2,6 +2,8 @@ use clap::{command, Parser, Subcommand, Args};
 use log::LevelFilter;
 
 use crate::environment::Environment;
+#[cfg(feature = "generate-completions")]
+use crate::commands::completions::GenerateCompletionsArgs;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -24,7 +26,9 @@ impl CommandLine {
 #[derive(Subcommand)] 
 pub enum Command {
     Pull(PullArgs),
-    Push(PushArgs)
+    Push(PushArgs),
+    #[cfg(feature = "generate-completions")]
+    Generate(GenerateCompletionsArgs)
 }
 
 #[derive(Debug, Args)]

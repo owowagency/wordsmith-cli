@@ -9,6 +9,7 @@ edition = "2021"
 [dependencies]
 async-trait = "0.1.71"
 clap = { version = "4.2.7", features = ["derive", "cargo", "string", "color"] }
+clap_complete = { version = "4.3.2" }
 env_logger = { version = "0.10.0", features = [] }
 futures = { version = "0.3.28", features = ["async-await", "executor"] }
 log = "0.4.19"
@@ -30,3 +31,4 @@ panic = "abort"
 [features]
 # Treat warnings as a build error.
 strict = []
+generate-completions = []

@@ -6,19 +6,42 @@ on:
 name: Release
 
 jobs:
+  shell_completions: 
+    name: 📦 Release ${{ matrix.shell }} completions
+    runs-on: ubuntu-latest
+    strategy: 
+      matrix:
+        shell: [zsh, fish, bash, powershell]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Generate completions
+        run: cargo run --features=generate-completions -- generate --shell=${{ matrix.shell }} --output=target/completions.${{ matrix.shell }}
+      - name: ⚙️ Generate
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/completions.${{ matrix.shell }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
-    name: Release
+    name: 📦 Release ${{ matrix.name }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
         include:
           - os: windows-latest
+            name: Windows
             artifact: target/release/wordsmith.exe
             file: wordsmith.exe
           - os: macos-latest
+            name: MacOS
             artifact: target/release/wordsmith
             file: wordsmith-macos
           - os: ubuntu-latest
+            name: Linux
             artifact: target/release/wordsmith
             file: wordsmith-linux
     runs-on: ${{ matrix.os }}
