@@ -7,23 +7,34 @@ name: Release
 
 jobs:
   shell_completions: 
-    name: 📦 Release ${{ matrix.shell }} completions
+    name: 📦 Release shell completions
     runs-on: ubuntu-latest
-    strategy: 
-      matrix:
-        shell: [zsh, fish, bash, powershell]
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
+      - name: Build wordsmith
+        run: cargo build --features=generate-completions
+      - name: Create placeholder config
+        run: |
+          echo "project_id: 1" > wordsmith.yml
+          echo "token: example" >> wordsmith.yml
       - name: Generate completions
-        run: cargo run --features=generate-completions -- generate --shell=${{ matrix.shell }} --output=target/completions.${{ matrix.shell }}
+        run: | 
+          ./target/debug/wordsmith generate --shell=zsh --output=target/completions.zsh
+          ./target/debug/wordsmith generate --shell=bash --output=target/completions.bash
+          ./target/debug/wordsmith generate --shell=fish --output=target/completions.fish
+          ./target/debug/wordsmith generate --shell=powershell --output=target/completions.powershell
       - name: ⚙️ Generate
         uses: softprops/action-gh-release@v1
         with:
-          files: target/completions.${{ matrix.shell }}
+          files: |
+            target/completions.zsh
+            target/completions.bash
+            target/completions.fish
+            target/completions.powershell
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
