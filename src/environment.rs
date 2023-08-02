@@ -25,7 +25,6 @@ impl FromStr for Environment {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let path = Path::new(s);
         let file = File::open(path).map_err(|err| err.to_string())?;
-        // TODO: Allow other formats? json, xml😃 others?
         serde_yaml::from_reader(file).map_err(|err| map_serde_yml_error(s, &err))
     }
 }

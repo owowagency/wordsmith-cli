@@ -10,9 +10,6 @@ pub mod pull;
 pub mod push;
 pub mod info;
 
-// TODO: env files?
-// const BASE_URL: &str = "https://wordsmith-staging.owow.codes";
-// const USER_AGENT: &str = "Wordsmith CLI v1.0";
 const BASE_URL: &'static str = env!("BASE_URL");
 const USER_AGENT: &'static str = env!("USER_AGENT");
 

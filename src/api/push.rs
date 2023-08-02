@@ -15,7 +15,6 @@ impl WordsmithClient {
     ) -> Result<(), WordsmithError> {
         let url = format!("{BASE_URL}/projects/{project_id}/translations/push");
         let part = Part::bytes(data.clone()).file_name("testing.xml");
-        // php 💩
         let verify_existing_values = if overwrite_existing_values { 
             "1"
         } else {
