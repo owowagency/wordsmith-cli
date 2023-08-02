@@ -1,0 +1,32 @@
+[package]
+name = "wordsmith"
+# Is overwritten in build.rs
+version = "0.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = "0.1.71"
+clap = { version = "4.2.7", features = ["derive", "cargo", "string", "color"] }
+env_logger = { version = "0.10.0", features = [] }
+futures = { version = "0.3.28", features = ["async-await", "executor"] }
+log = "0.4.19"
+reqwest = { version = "0.11.17", features = ["json", "multipart"] }
+serde = { version = "1.0.163", features = ["derive"] }
+serde_yaml = "0.9.21"
+thiserror = "1.0.44"
+tokio = { version = "1.29.1", features = ["macros", "rt-multi-thread", "fs"] }
+
+[build-dependencies]
+dotenv = "0.15.0"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[features]
+# Treat warnings as a build error.
+strict = []
