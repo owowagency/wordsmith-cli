@@ -25,3 +25,7 @@ bin
 *.njsproj
 *.sln
 *.sw?
+
+# Testing data
+wordsmith.yml
+locales/

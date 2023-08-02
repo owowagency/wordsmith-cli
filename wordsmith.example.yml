@@ -1,0 +1,32 @@
+projectId: 1
+token: replace-with-token
+targets:
+    # The file to use when pulling/pushing, {locale} will be replaced by the pulled/pushed locale, e.g. locales/values-en/strings-web.xml
+  - file: locales/values-{locale}/strings-app.xml
+    # [Optional] The file to use when pulling/pushing the default locale
+    defaultLocaleOverride: locales/values/strings-app.xml
+    # Types of this target, possible values: push, pull
+    types: 
+      - push
+      - pull
+    # Arguments for this target
+    args:
+      # Format of the file, possible values: 
+      # - apple-strings (iOS Localizable string files)
+      # - android-strings (XML Android string files)
+      # - csv
+      # - i18n
+      # - json
+      fileType: android-strings
+      # [Optional] tags to include when pulling/pushing this file
+      tags: 
+        - app
+  - file: locales/values-{locale}/strings-library.xml
+    defaultLocaleOverride: locales/values/strings-library.xml
+    types: 
+      - push
+      - pull
+    args:
+      fileType: android-strings
+      tags: 
+        - library

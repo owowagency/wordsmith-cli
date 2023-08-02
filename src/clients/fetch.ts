@@ -20,7 +20,7 @@ export default class Fetch extends HttpClient {
 
     private get headers() {
         return {
-            Authorization: `Bearer ${this.config.apiKey}`,
+            Authorization: `Bearer ${this.apiToken}`,
             Accept: 'application/json',
         };
     }

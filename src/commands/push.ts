@@ -1,12 +1,21 @@
+import { readFileSync } from 'node:fs';
 import type { Command } from 'commander';
 import chalk from 'chalk';
+import yaml from 'yaml';
 import { verifyConfigFile } from '@/misc/actions';
-import JSONExtension from '@/extensions/json';
+import Translatable from '@/contracts/translation';
+import { TargetType } from '@/misc/enums';
 
 export interface PushOptions {
-    languages?: string
-    overwrite?: boolean
-    verify?: boolean
+    env: string
+    overwrite: boolean
+    verify: boolean
+}
+
+function loadEnv(env: string): Config {
+    const src = readFileSync(env).toString();
+
+    return yaml.parse(src);
 }
 
 export default <SubCommand>{
@@ -15,26 +24,45 @@ export default <SubCommand>{
             .command('push')
             .description('Push content to Wordsmith.')
             .summary('Push content to Wordsmith')
-            .option('-l, --languages <languages>', 'Comma seperated list of ISO 639-1 language codes. Will push all languages if not specified')
-            .action(async (options: PushOptions) => {
+            .option('-e, --env <env>', 'Environment file', 'wordsmith.yml')
+            .option('-f, --force <overwrite>', 'Overwrite existing translations', false)
+            .option('-v, --verify <verify>', 'Verify translations', false)
+            .action(async ({ env, overwrite, verify }: PushOptions) => {
                 verifyConfigFile();
+                const config = loadEnv(env);
+                const targets = config.targets.filter((target: Target) => target.types.includes(TargetType.Push));
+                const contract = new Translatable(config.token);
 
-                // @todo: for now we only have one extension / supported type
-                const jsonExtension = new JSONExtension();
+                // TODO: Get from API?
+                const defaults = {
+                    locales: ['en', 'nl', 'fr'],
+                    defaultLocale: 'en',
+                };
 
-                const files = jsonExtension.files.filter(
-                    item => options.languages
-                        ? options.languages?.split(',').map(item => item.trim()).includes(item.name)
-                        : true,
-                );
+                for (const target of targets) {
+                    for (const locale of defaults.locales) {
+                        let output = target.file;
 
-                for (const file of files) {
-                    const isSuccess = await jsonExtension.push(file);
+                        if (defaults.defaultLocale === locale && !!target.defaultLocaleOverride) {
+                            output = target.defaultLocaleOverride;
+                        }
 
-                    if (isSuccess) {
-                        console.log(chalk.blueBright(`[${file.name.toUpperCase()}]`), 'pushed successfully');
-                    } else {
-                        console.log(chalk.redBright(`[${file.name.toUpperCase()}]`), 'operation failed');
+                        output = output.replace('{locale}', locale);
+
+                        console.log(chalk.blueBright(`[${locale.toUpperCase()}]`), `Pushing ${output}`);
+                        try {
+                            await contract.push(
+                                config.projectId,
+                                locale,
+                                target.args.fileType,
+                                output,
+                                target.args.tags || [],
+                                { overwrite, verify },
+                            );
+                            console.log(chalk.blueBright(`[${locale.toUpperCase()}]`), 'pushed successfully');
+                        } catch (e) {
+                            console.log(chalk.redBright(`[${locale.toUpperCase()}]`), 'operation failed', e);
+                        }
                     }
                 }
             });

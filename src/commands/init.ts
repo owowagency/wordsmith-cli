@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs';
 import inquirer from 'inquirer';
 import type { Command } from 'commander';
 import chalk from 'chalk';
-import { TranslationType } from '@/misc/enums';
+import yaml from 'yaml';
 
 export default <SubCommand>{
     bind(command: Command) {
@@ -14,21 +14,6 @@ export default <SubCommand>{
                 inquirer
                     .prompt([
                         {
-                            type: 'list',
-                            name: 'type',
-                            message: 'File format:',
-                            choices: [
-                                TranslationType.I18Next,
-                                TranslationType.JSON,
-                            ],
-                        },
-                        {
-                            type: 'input',
-                            name: 'langDir',
-                            message: 'Language folder:',
-                            default: 'lang',
-                        },
-                        {
                             type: 'input',
                             name: 'projectId',
                             message: 'Project ID:',
@@ -38,15 +23,17 @@ export default <SubCommand>{
                         },
                         {
                             type: 'input',
-                            name: 'apiKey',
+                            name: 'token',
                             message: 'API Key:',
                             validate(input: string) {
                                 return !!input.trim();
                             },
                         },
+
+                        // TODO: Interactive way to create targets?
                     ])
                     .then((answers) => {
-                        writeFileSync(process.env.CONFIG_FILE || '', JSON.stringify(answers, null, 4));
+                        writeFileSync(process.env.CONFIG_FILE || '', yaml.stringify(answers));
 
                         console.log(chalk.green(`${process.env.CONFIG_FILE} file has been created. 🚀`));
                     });

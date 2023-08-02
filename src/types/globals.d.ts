@@ -1,14 +1,26 @@
+import { TargetType, TranslationType } from '@/misc/enums';
 import type {Command} from 'commander';
+import { FileTypes } from 'glob/dist/mjs/glob';
 
 export {};
 
 declare global {
     interface Config {
-        apiKey: string;
-        langDir: string;
-        exportType?: any;
+        token: string;
         projectId: string;
-        importType?: any;
+        targets: Target[];
+    }
+
+    interface Target {
+        file: string;
+        defaultLocaleOverride?: string;
+        types: TargetType[];
+        args: TargetArguments;
+    }
+
+    interface TargetArguments {
+        fileType: TranslationType;
+        tags?: string[];
     }
 
     interface SubCommand {

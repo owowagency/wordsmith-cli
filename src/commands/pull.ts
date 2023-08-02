@@ -1,11 +1,20 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import chalk from 'chalk';
 import type { Command } from 'commander';
+import yaml from 'yaml';
 import { verifyConfigFile } from '@/misc/actions';
-import JSONExtension from '@/extensions/json';
+import Translatable from '@/contracts/translation';
+import { TargetType } from '@/misc/enums';
 
-interface PullOptionas {
-    languages: string
-    tags?: string
+interface PullOptions {
+    env: string
+}
+
+function loadEnv(env: string): Config {
+    const src = readFileSync(env).toString();
+
+    return yaml.parse(src);
 }
 
 export default <SubCommand>{
@@ -14,22 +23,42 @@ export default <SubCommand>{
             .command('pull')
             .description('Pull content from Wordsmith.')
             .summary('Pulls content from Wordsmith')
-            .requiredOption('-l, --languages <languages>', 'Comma seperated list of ISO 639-1 language codes.')
-            .action(async ({ languages }: PullOptionas) => {
+            .option('-e, --env <env>', 'Environment file', 'wordsmith.yml')
+            .action(async ({ env }: PullOptions) => {
                 verifyConfigFile();
+                const config = loadEnv(env);
+                const targets = config.targets.filter((target: Target) => target.types.includes(TargetType.Pull));
+                const contract = new Translatable(config.token);
 
-                // @todo: for now we only have one extension / supported type
-                const jsonExtension = new JSONExtension();
+                // TODO: Get from API?
+                const defaults = {
+                    locales: ['en', 'nl', 'fr'],
+                    defaultLocale: 'en',
+                };
 
-                const langs = languages.split(',').map(item => item.trim()).filter(item => !!item);
+                for (const target of targets) {
+                    for (const locale of defaults.locales) {
+                        let output = target.file;
 
-                for (const language of langs) {
-                    const isSuccess = await jsonExtension.pull(language);
+                        if (defaults.defaultLocale === locale && !!target.defaultLocaleOverride) {
+                            output = target.defaultLocaleOverride;
+                        }
 
-                    if (isSuccess) {
-                        console.log(chalk.blueBright(`[${language.toUpperCase()}]`), 'pulled successfully');
-                    } else {
-                        console.log(chalk.redBright(`[${language.toUpperCase()}]`), 'operation failed');
+                        output = output.replace('{locale}', locale);
+                        console.log(chalk.blueBright(`[${locale.toUpperCase()}]`), `Pulling into ${output}`);
+
+                        try {
+                            const data = await contract.pull(config.projectId, locale, target.args.fileType, target.args.tags || []);
+                            console.log(chalk.blueBright(`[${locale.toUpperCase()}]`), 'pulled successfully');
+
+                            if (!existsSync(output)) {
+                                mkdirSync(dirname(output), { recursive: true });
+                            }
+
+                            writeFileSync(output, data);
+                        } catch (e) {
+                            console.log(chalk.redBright(`[${locale.toUpperCase()}]`), 'operation failed', e);
+                        }
                     }
                 }
             });
