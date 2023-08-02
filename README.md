@@ -1,5 +1,9 @@
 # Wordsmith CLI
 
+## Github action
+
+[wordsmith-action](https://github.com/owowagency/wordsmith-action)
+
 ## Commands
 
 ### Pull
