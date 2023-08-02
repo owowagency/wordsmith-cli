@@ -1,0 +1,43 @@
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:        
+      - '(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+)(?<postfix>-.+)?' 
+
+name: Release
+
+jobs:
+  release:
+    name: Release
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            artifact: target/release/wordsmith.exe
+            file: wordsmith.exe
+          - os: macos-latest
+            artifact: target/release/wordsmith
+            file: wordsmith-macos
+          - os: ubuntu-latest
+            artifact: target/release/wordsmith
+            file: wordsmith-linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: 🏗️ Cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --features "strict" --release
+      - run: cp ${{ matrix.artifact}} ${{ matrix.file }}
+      - name: 📦 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ matrix.file }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
