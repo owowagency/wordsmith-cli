@@ -1,12 +1,26 @@
 on:
   push:
-    tags:        
-      - 'v*' 
+    branches:   
+      - master     
+      - rust/mvp
 
 name: Release
 
 jobs:
-  generate_changelog: 
+  create_tag: 
+    name: Semantic release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Semantic release
+        run: |
+          yarn install --immutable
+          yarn semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  generate_changelog:
+    needs: create_tag
     name: 📦 Release shell completions
     runs-on: ubuntu-latest
     steps:
@@ -24,6 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   shell_completions: 
+    needs: generate_changelog
     name: 📦 Release shell completions
     runs-on: ubuntu-latest
     steps:
@@ -57,6 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
+    needs: generate_changelog
     name: 📦 Release ${{ matrix.name }}
     strategy:
       matrix:
