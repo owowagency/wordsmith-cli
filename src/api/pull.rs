@@ -12,11 +12,10 @@ impl WordsmithClient {
         query.push(("language".to_string(), locale.to_string()));
         query.push(("file_type".to_string(), file_type.to_string()));
 
-        let default_tags = vec![];
-        let tags = tags.unwrap_or(&default_tags);
-
-        for tag in tags {
-            query.push(("tags[]".to_string(), tag.0.clone()));
+        if let Some(tags) = tags {
+            for tag in tags {
+                query.push(("tags[]".to_string(), tag.0.clone()));
+            }
         }
 
         let request = self.client.get(url).query(&query).build()?;
