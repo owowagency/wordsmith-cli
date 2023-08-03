@@ -6,6 +6,21 @@ on:
 name: Release
 
 jobs:
+  generate_changelog: 
+    name: 📦 Release shell completions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Semantic release
+        run: yarn semantic-release
+      - name: 📦 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          append_body: false
+          body_path: docs/CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   shell_completions: 
     name: 📦 Release shell completions
     runs-on: ubuntu-latest
@@ -30,6 +45,8 @@ jobs:
       - name: ⚙️ Generate
         uses: softprops/action-gh-release@v1
         with:
+          body: ''
+          append_body: true
           files: |
             target/completions.zsh
             target/completions.bash
@@ -71,6 +88,8 @@ jobs:
       - name: 📦 Release
         uses: softprops/action-gh-release@v1
         with:
+          body: ''
+          append_body: true
           files: ${{ matrix.file }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

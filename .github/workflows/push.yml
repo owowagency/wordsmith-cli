@@ -1,0 +1,17 @@
+on:
+  push:
+    branches:        
+      - master
+      - mvp/rust 
+  
+name: Release
+  
+jobs:
+  generate_changelog: 
+    name: 📦 Release shell completions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Semantic release
+        run: yarn semantic-release
