@@ -79,23 +79,3 @@ jobs:
           files: ${{ matrix.file }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  generate_changelog:
-    needs: release
-    name: 📦 Release changelog
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - name: Semantic release
-        run: |
-          yarn install --immutable
-          yarn semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 📦 Release
-        uses: softprops/action-gh-release@v1
-        with:
-          append_body: false
-          body_path: docs/CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
