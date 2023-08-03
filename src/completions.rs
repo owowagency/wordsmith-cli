@@ -44,7 +44,7 @@ pub fn generate_completion<G: Generator>(shell: G, buf: &mut dyn Write) {
     generate(
         shell,
         &mut command,
-        env!("CARGO_BIN_NAME"),
+        "wordsmith",
         buf,
     );
 }
