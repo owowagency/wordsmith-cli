@@ -12,6 +12,7 @@ impl PullArgs {
         target: &TargetFile,
         tags: Option<&[Tag]>,
         locales: &Vec<String>,
+        dry_run: bool,
     ) -> Result<(), WordsmithError> {
         let mut pull_tasks = vec![];
 
@@ -21,6 +22,7 @@ impl PullArgs {
                 &target,
                 tags,
                 locale.clone(), 
+                dry_run,
             );
             pull_tasks.push(task);            
         }
@@ -36,19 +38,24 @@ impl PullArgs {
         target: &TargetFile,
         tags: Option<&[Tag]>,
         locale: String,
+        dry_run: bool,
     ) -> Result<(), WordsmithError> {
         let output_path = target.target_path(&locale);
         info!("Pulling {:?} [{}]", output_path, locale);
-        let result = {
-            let data = client.pull(self.global.env.project_id, &target.r#type, &locale, tags).await?;
-            target.write(&locale, &data).await
-        };
 
-        if let Err(_) = result {
-            error!("Failed to pull locale {:?} into {}", locale, output_path)
+        if !dry_run {
+            let result = {
+                let data = client.pull(self.global.env.project_id, &target.r#type, &locale, tags).await?;
+                target.write(&locale, &data).await
+            };
+
+            if let Err(_) = result {
+                error!("Failed to pull locale {:?} into {}", locale, output_path)
+            }
+            return result;
         }
 
-        result
+        Ok(())
     }
 }
 
@@ -77,7 +84,7 @@ impl Execute for PullArgs {
                 let local_target = target.clone();
                 let locales = get_locales(&project, &local_target);
                 let file_target = TargetFile::from(&project, &local_target);
-                self.try_pull_all(&client, &file_target, target.args.tags.as_deref(), &locales).await
+                self.try_pull_all(&client, &file_target, target.args.tags.as_deref(), &locales, self.dry_run).await
             };
             
             pull_tasks.push(task);

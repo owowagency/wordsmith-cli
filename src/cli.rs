@@ -31,13 +31,17 @@ pub struct PushArgs {
     /// Overwrites existing strings
     #[arg(short = 'f', long = "force", default_value_t = false)]
     pub overwrite: bool,
-    /// Verify translations ???
+    /// Verify translations
     #[arg(short, long, default_value_t = false)]
     pub verify: bool,
+    #[arg(short = 'd', long = "dry-run", default_value_t = false)]
+    pub dry_run: bool,
 }
 
 #[derive(Debug, Args)]
 pub struct PullArgs {
     #[clap(flatten)]
     pub global: GlobalArgs,
+    #[arg(short = 'd', long = "dry-run", default_value_t = false)]
+    pub dry_run: bool,
 }

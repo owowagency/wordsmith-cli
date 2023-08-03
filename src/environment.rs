@@ -4,6 +4,7 @@ use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct Environment {
     pub project_id: u32,
     pub token: String,
@@ -38,6 +39,7 @@ pub enum TargetType {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct Target {
     pub file: String,
     pub default_locale_override: Option<String>,
@@ -46,6 +48,7 @@ pub struct Target {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct TargetArgs {
     pub file_type: String,
     pub locales: Option<Vec<String>>,

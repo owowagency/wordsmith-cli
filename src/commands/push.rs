@@ -12,6 +12,7 @@ impl PushArgs {
         target: &TargetFile,
         tags: Option<&[Tag]>,
         locales: &Vec<String>,
+        dry_run: bool,
     ) -> Result<(), WordsmithError> {
         let mut pull_tasks = vec![];
 
@@ -21,6 +22,7 @@ impl PushArgs {
                 &target,
                 tags,
                 locale.clone(), 
+                dry_run,
             );
             pull_tasks.push(task);            
         }
@@ -36,27 +38,32 @@ impl PushArgs {
         target: &TargetFile,
         tags: Option<&[Tag]>,
         locale: String,
+        dry_run: bool,
     ) -> Result<(), WordsmithError> {
         let output_path = target.target_path(&locale);
         info!("Pushing {:?} [{}]", output_path, locale);
-        let result = {
-            let data = target.read(&locale).await?;
-            client.push(
-                self.global.env.project_id, 
-                &target.r#type, 
-                &locale, 
-                tags,
-                &data,
-                self.overwrite,
-                self.verify,
-            ).await
-        };
+        if !dry_run {
+            let result = {
+                let data = target.read(&locale).await?;
+                client.push(
+                    self.global.env.project_id, 
+                    &target.r#type, 
+                    &locale, 
+                    tags,
+                    &data,
+                    self.overwrite,
+                    self.verify,
+                ).await
+            };
 
-        if let Err(_) = result {
-            error!("Failed to push locale {:?} from {}", locale, output_path)
+            if let Err(_) = result {
+                error!("Failed to push locale {:?} from {}", locale, output_path)
+            }
+
+            return result;
         }
 
-        result
+        Ok(())
     }
 }
 
@@ -83,7 +90,7 @@ impl Execute for PushArgs {
                 let local_target = target.clone();
                 let locales = get_locales(&project, &local_target);
                 let file_target = TargetFile::from(&project, &local_target);
-                self.try_push_all(&client, &file_target, target.args.tags.as_deref(), &locales).await
+                self.try_push_all(&client, &file_target, target.args.tags.as_deref(), &locales, self.dry_run).await
             };
             
             pull_tasks.push(task);
