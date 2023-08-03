@@ -17,7 +17,7 @@ jobs:
           toolchain: stable
       - name: Create placeholder config
         run: |
-          echo "project_id: 1" > wordsmith.yml
+          echo "project-id: 1" > wordsmith.yml
           echo "token: example" >> wordsmith.yml
       - name: Build wordsmith completions
         run: cargo build --bin=wordsmith-completions
