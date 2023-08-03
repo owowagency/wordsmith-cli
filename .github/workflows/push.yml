@@ -15,5 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
       - name: Semantic release
         run: |
-            yarn install --immutable
-            yarn semantic-release
+          yarn install --immutable
+          yarn semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
