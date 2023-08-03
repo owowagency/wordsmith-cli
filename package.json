@@ -1,0 +1,17 @@
+{
+  "name": "wordsmith",
+  "version": "0.1.0",
+  "main": "index.js",
+  "private": true,
+  "repository": "git@github.com:owowagency/wordsmith-cli.git",
+  "license": "MIT",
+  "scripts": {
+    "semantic-release": "semantic-release"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^10.0.1",
+    "@semantic-release/release-notes-generator": "^11.0.4",
+    "semantic-release": "^21.0.7"
+  }
+}

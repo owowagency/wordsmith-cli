@@ -1,3 +1,5 @@
 /target
 /locales
+/node_modules
+/docs
 wordsmith.yml
