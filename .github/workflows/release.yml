@@ -1,44 +1,12 @@
 on:
   push:
-    branches:   
-      - master     
-      - rust/mvp
+    tags:   
+      - 'v*'
 
 name: Release
 
 jobs:
-  create_tag: 
-    name: Semantic release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - name: Semantic release
-        run: |
-          yarn install --immutable
-          yarn semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  generate_changelog:
-    needs: create_tag
-    name: 📦 Release shell completions
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - name: Semantic release
-        run: |
-          yarn install --immutable
-          yarn semantic-release
-      - name: 📦 Release
-        uses: softprops/action-gh-release@v1
-        with:
-          append_body: false
-          body_path: docs/CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   shell_completions: 
-    needs: generate_changelog
     name: 📦 Release shell completions
     runs-on: ubuntu-latest
     steps:
@@ -72,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
-    needs: generate_changelog
+    needs: shell_completions
     name: 📦 Release ${{ matrix.name }}
     strategy:
       matrix:
@@ -109,5 +77,23 @@ jobs:
           body: ''
           append_body: true
           files: ${{ matrix.file }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  generate_changelog:
+    needs: release
+    name: 📦 Release shell completions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Semantic release
+        run: |
+          yarn install --immutable
+          yarn semantic-release
+      - name: 📦 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          append_body: false
+          body_path: docs/CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
