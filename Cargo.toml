@@ -1,5 +1,6 @@
 [package]
 name = "wordsmith"
+default-run = "wordsmith"
 # Is overwritten in build.rs
 version = "0.0.0"
 edition = "2021"
@@ -31,4 +32,11 @@ panic = "abort"
 [features]
 # Treat warnings as a build error.
 strict = []
-generate-completions = []
+
+[[bin]]
+name = "wordsmith"
+path = "src/main.rs"
+
+[[bin]]
+name = "wordsmith-completions"
+path = "src/completions.rs"

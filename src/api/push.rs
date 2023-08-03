@@ -1,5 +1,7 @@
 use reqwest::multipart::{Form, Part};
 
+use crate::environment::Tag;
+
 use super::{WordsmithClient, BASE_URL, WordsmithError};
 
 impl WordsmithClient {
@@ -8,7 +10,7 @@ impl WordsmithClient {
         project_id: u32, 
         file_type: &str, 
         locale: &str,
-        tags: Option<&[String]>,
+        tags: Option<&[Tag]>,
         data: &Vec<u8>,
         overwrite_existing_values: bool,
         verify_translations: bool,
@@ -33,7 +35,7 @@ impl WordsmithClient {
             .text("verify_translations", verify_translations);
 
         for tag in tags.unwrap_or(&vec![]) {
-            form = form.text("tags[]", tag.to_string());
+            form = form.text("tags[]", tag.0.clone());
         }
 
         let request = self.client.post(url).multipart(form).build()?;

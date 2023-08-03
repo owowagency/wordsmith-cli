@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use futures::future::try_join_all;
 use log::{info, error};
 
-use crate::{cli::PushArgs, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType}, commands::helpers::get_locales};
+use crate::{cli::PushArgs, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType, Tag}, commands::helpers::get_locales};
 
 use super::{Execute, helpers::TargetFile};
 
@@ -10,7 +10,7 @@ impl PushArgs {
     async fn try_push_all(
         &self, client: &WordsmithClient, 
         target: &TargetFile,
-        tags: Option<&[String]>,
+        tags: Option<&[Tag]>,
         locales: &Vec<String>,
     ) -> Result<(), WordsmithError> {
         let mut pull_tasks = vec![];
@@ -34,7 +34,7 @@ impl PushArgs {
         &self, 
         client: &WordsmithClient, 
         target: &TargetFile,
-        tags: Option<&[String]>,
+        tags: Option<&[Tag]>,
         locale: String,
     ) -> Result<(), WordsmithError> {
         let output_path = target.target_path(&locale);

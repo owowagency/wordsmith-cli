@@ -1,6 +1,6 @@
 use std::{str::FromStr, fs::File, path::Path};
 
-use serde::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -49,5 +49,52 @@ pub struct Target {
 pub struct TargetArgs {
     pub file_type: String,
     pub locales: Option<Vec<String>>,
-    pub tags: Option<Vec<String>>
+    pub tags: Option<Vec<Tag>>
+}
+
+#[derive(Debug, Clone)]
+pub struct Tag(pub String);
+
+impl Into<String> for Tag {
+    fn into(self) -> String {
+        self.0
+    }
+}
+
+impl Serialize for Tag {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_newtype_struct("Tag", &self.0)
+    }
+}
+
+impl<'de> Deserialize<'de> for Tag {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+        D: Deserializer<'de> {
+        #[derive(Deserialize)]
+        struct UncheckedTag(String);
+
+        let tag = UncheckedTag::deserialize(deserializer)?;
+
+        if tag.0.is_empty() {
+            return Err(serde::de::Error::custom("Tag may not be empty"));
+        }
+
+        if tag.0.chars().any(|c| !c.is_alphanumeric()) {
+            return Err(serde::de::Error::custom(format!("Tag {} is not alphanumeric", tag.0)));
+        }
+
+        Ok(Tag(tag.0))
+    }
+}
+
+#[test]
+fn test_tag_deserialization() {
+    assert!(serde_yaml::from_str::<Tag>("").is_err());
+    assert!(serde_yaml::from_str::<Tag>("non-alphanumeric").is_err());
+    assert!(serde_yaml::from_str::<Tag>("valid").is_ok());
+    assert_eq!(serde_yaml::from_str::<Tag>("valid").expect("Should be ok").0, "valid".to_string());
 }

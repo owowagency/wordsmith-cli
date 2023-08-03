@@ -1,9 +1,6 @@
 use clap::{command, Parser, Subcommand, Args};
-use log::LevelFilter;
 
 use crate::environment::Environment;
-#[cfg(feature = "generate-completions")]
-use crate::commands::completions::GenerateCompletionsArgs;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -12,23 +9,10 @@ pub struct CommandLine {
     pub command: Command,
 }
 
-impl CommandLine {
-    pub fn setup_logging(&self) {
-        let filter = match &self.command {
-            Command::Pull(args) if args.global.verbose => LevelFilter::Debug,
-            Command::Push(args) if args.global.verbose => LevelFilter::Debug,
-            _ => LevelFilter::Info,
-        };
-        env_logger::Builder::new().filter_level(filter).init();
-    }
-}
-
 #[derive(Subcommand)] 
 pub enum Command {
     Pull(PullArgs),
     Push(PushArgs),
-    #[cfg(feature = "generate-completions")]
-    Generate(GenerateCompletionsArgs)
 }
 
 #[derive(Debug, Args)]

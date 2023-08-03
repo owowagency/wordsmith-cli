@@ -5,8 +5,6 @@ use crate::{cli::Command, api::WordsmithError};
 mod pull;
 mod push;
 mod helpers;
-#[cfg(feature = "generate-completions")]
-pub mod completions;
 
 #[async_trait]
 pub trait Execute {
@@ -19,8 +17,6 @@ impl Execute for Command {
         match self {
             Command::Pull(args) => args.execute().await?,
             Command::Push(args) => args.execute().await?,
-            #[cfg(feature = "generate-completions")]
-            Command::Generate(args) => args.execute().await?,
         };
 
         Ok(())

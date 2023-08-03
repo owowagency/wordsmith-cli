@@ -15,18 +15,18 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-      - name: Build wordsmith
-        run: cargo build --features=generate-completions
       - name: Create placeholder config
         run: |
           echo "project_id: 1" > wordsmith.yml
           echo "token: example" >> wordsmith.yml
+      - name: Build wordsmith completions
+        run: cargo build --bin=wordsmith-completions
       - name: Generate completions
         run: | 
-          ./target/debug/wordsmith generate --shell=zsh --output=target/completions.zsh
-          ./target/debug/wordsmith generate --shell=bash --output=target/completions.bash
-          ./target/debug/wordsmith generate --shell=fish --output=target/completions.fish
-          ./target/debug/wordsmith generate --shell=powershell --output=target/completions.powershell
+          ./target/debug/wordsmith-completions --shell=zsh --output=target/completions.zsh
+          ./target/debug/wordsmith-completions --shell=bash --output=target/completions.bash
+          ./target/debug/wordsmith-completions --shell=fish --output=target/completions.fish
+          ./target/debug/wordsmith-completions --shell=powershell --output=target/completions.powershell
       - name: ⚙️ Generate
         uses: softprops/action-gh-release@v1
         with:
