@@ -70,7 +70,7 @@ Wordsmith CLI accepts YAML configuration files, the default configuration file i
 - `android-strings` (Android xml)
 - `json`
 - `csv`
-- `i18n` (i18next)
+- `i18next` (i18next)
 
 ## Example Configuration
 
@@ -92,7 +92,7 @@ targets:
       # - apple-strings (iOS Localizable string files)
       # - android-strings (XML Android string files)
       # - csv
-      # - i18n
+      # - i18next
       # - json
       file-type: android-strings
       # [Optional] tags to include when pulling/pushing this file
