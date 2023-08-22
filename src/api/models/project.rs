@@ -1,7 +1,10 @@
 use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ProjectResponse {
-    pub default_locale: Option<String>,
-    pub locales: Option<Vec<String>>
+    #[serde(rename="defaultLanguage")]
+    pub default_locale: String,
+    #[serde(rename="languages", default)]
+    pub locales: Vec<String>
 }

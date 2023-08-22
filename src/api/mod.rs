@@ -138,7 +138,8 @@ impl WordsmithClient {
             return match response.json().await {
                 Ok(error) => WordsmithError::Api(status, error),
                 Err(err) => WordsmithError::Api(status, ApiError { 
-                    message: err.to_string()
+                    message: err.to_string(),
+                    errors: vec![],
                 })
             };
         }
@@ -146,6 +147,7 @@ impl WordsmithClient {
         match response.text().await {
             Ok(text) => WordsmithError::Api(status, ApiError {
                 message: text,
+                errors: vec![],
             }),
             Err(err) => err.into(),
         } 

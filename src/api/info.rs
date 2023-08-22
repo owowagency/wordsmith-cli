@@ -1,18 +1,9 @@
-use std::vec;
-
-use log::warn;
-
-use super::{WordsmithClient, WordsmithError, models::project::ProjectResponse};
+use super::{BASE_URL, WordsmithClient, WordsmithError, models::project::ProjectResponse};
 
 impl WordsmithClient {
     pub async fn info(&self, project_id: u32) -> Result<ProjectResponse, WordsmithError> {
-        let mocked = ProjectResponse {
-            default_locale: Some("en".to_string()),
-            locales: Some(vec!["en".to_string(), "nl".to_string(), "fr".to_string()])
-        };
-
-        warn!("Mocking response for GET /projects/{} -> {:?}", project_id, mocked);
-
-        Ok(mocked)
+        let url = format!("{BASE_URL}/projects/{project_id}");
+        let request = self.client.get(url).build()?;
+        self.execute(request).await
     }
 }

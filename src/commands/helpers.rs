@@ -15,7 +15,7 @@ pub struct TargetFile {
     pub r#type: String,
     pub path: String,
     pub path_override: Option<String>,
-    pub default_locale: Option<String>,
+    pub default_locale: String,
 }
 
 impl TargetFile {
@@ -29,9 +29,9 @@ impl TargetFile {
     }
 
     pub fn target_path(&self, locale: &String) -> String {
-        match &self.default_locale {
-            Some(default_locale) if locale == default_locale => self.path_override.as_ref().unwrap_or(&self.path),
-            _ => &self.path
+        match (self.path_override.clone(), &self.default_locale) {
+            (Some(path_override), default_locale) if default_locale == locale => path_override,
+            _ => self.path.clone()
         }.replace("{locale}", locale)
     }
 
@@ -65,11 +65,8 @@ impl TargetFile {
 }
 
 pub fn get_locales(project: &ProjectResponse, target: &Target) -> Vec<String> {
-    if let Some(locales) = target.args.locales.clone() {
-        locales
-    } else if let Some(locales) = project.locales.clone() {
-        locales
-    } else {
-        vec![]
+    match target.args.locales.clone() {
+        Some(locales) => locales,
+        None => project.locales.clone()
     }
 }
