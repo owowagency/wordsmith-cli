@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use futures::future::try_join_all;
 use log::{info, error};
 
-use crate::{cli::PushArgs, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType, Tag}, commands::helpers::get_locales};
+use crate::{cli::{PushArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType, Tag}, commands::helpers::get_locales};
 
 use super::{Execute, helpers::TargetFile};
 
@@ -79,7 +79,7 @@ impl Execute for PushArgs {
             return Ok(());
         }
         
-        let client = WordsmithClient::new(Some(&self.global.env.token))?;
+        let client = WordsmithClient::new(Some(&self.access_token()))?;
         
         info!("Fetching project info for: {}", self.global.env.project_id);
         let project = client.info(self.global.env.project_id).await?;

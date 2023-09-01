@@ -17,6 +17,7 @@ wordsmith pull --env=wordsmith.yml
 | short | long | type | default | description |
 |---|---|---|---|---|
 | `-e` | `--env` | `String` | `wordsmith.yml` | Path to the configuration file |
+| | `--access-token` | `String` | `wordsmith.yml` | Access token |
 | | `--verbose` | `Bool` | `false` | Enables verbose logging |
 
 ### Push
@@ -30,6 +31,7 @@ wordsmith push --env=wordsmith.yml --force --verify
 | short | long | type | default | description |
 |---|---|---|---|---|
 | `-e` | `--env` | `String` | `wordsmith.yml` | Path to the configuration file |
+| | `--access-token` | `String` | `wordsmith.yml` | Access token |
 | `-f` | `--force` | `Bool` | `false` | Overwrite existing translations |
 | `-v` | `--verify` | `Bool` | `false` | Verify pushed translations |
 | | `--verbose` | `Bool` | `false` | Enables verbose logging |
@@ -44,7 +46,7 @@ Wordsmith CLI accepts YAML configuration files, the default configuration file i
 | name | type | description |
 |---|---|---|
 | `project-id` | `Number` | ID of the project |
-| `token` | `String` | Access token |
+| `token` | `String` | Access token or environment variable for access token, default: ${{ WORDMSMITH_ACCESS_TOKEN }} |
 | `targets` | `Target[]` | See [Targets](#targets) |
 
 
@@ -76,7 +78,10 @@ Wordsmith CLI accepts YAML configuration files, the default configuration file i
 
 ```yml
 project-id: 1
-token: replace-with-access-token
+# Use "${{ ENV_VARIABLE_NAME }}" to use environment variables (recommended)
+# Access tokens can also be stored in the config file directly (not recommended)
+# Defaults: ${{ WORDSMITH_ACCESS_TOKEN }}
+token: ${{ WORDSMITH_ACCESS_TOKEN }}
 targets:
     # The file to use when pulling/pushing, {locale} will be replaced by the pulled/pushed locale, e.g. locales/values-en/strings-web.xml
   - file: locales/values-{locale}/strings-app.xml

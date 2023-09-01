@@ -1,6 +1,6 @@
 use clap::{command, Parser, Subcommand, Args};
 
-use crate::environment::Environment;
+use crate::environment::{Environment, AccessToken};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -19,6 +19,8 @@ pub enum Command {
 pub struct GlobalArgs {
     #[arg(short, long, default_value = "wordsmith.yml", value_parser = clap::value_parser!(Environment))]
     pub env: Environment,
+    #[arg(long)]
+    pub access_token: Option<AccessToken>,
     /// Enable verbose logging
     #[arg(long, default_value_t = false)]
     pub verbose: bool
@@ -38,10 +40,32 @@ pub struct PushArgs {
     pub dry_run: bool,
 }
 
+pub trait HasAccessToken {
+    fn access_token(&self) -> AccessToken;
+}
+
+impl HasAccessToken for PushArgs {
+    fn access_token(&self) -> AccessToken {
+        match &self.global.access_token {
+            Some(token) => token.clone(),
+            None => self.global.env.token.clone(),
+        }
+    }
+}
+
 #[derive(Debug, Args)]
 pub struct PullArgs {
     #[clap(flatten)]
     pub global: GlobalArgs,
     #[arg(short = 'd', long = "dry-run", default_value_t = false)]
     pub dry_run: bool,
+}
+
+impl HasAccessToken for PullArgs {
+    fn access_token(&self) -> AccessToken {
+        match &self.global.access_token {
+            Some(token) => token.clone(),
+            None => self.global.env.token.clone(),
+        }
+    }
 }

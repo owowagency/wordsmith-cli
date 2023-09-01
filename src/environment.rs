@@ -1,13 +1,86 @@
-use std::{str::FromStr, fs::File, path::Path};
+use std::{str::FromStr, fs::File, path::Path, env, fmt::{Debug, Display}, os::macos::raw};
 
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
+
+#[derive(Clone)]
+pub enum AccessToken {
+    Env(String),
+    Plain(String),
+}
+
+impl FromStr for AccessToken {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.starts_with("${{") && s.ends_with("}}") {
+            let inner = &s[3..s.len() - 2].trim();
+            return Ok(AccessToken::Env(inner.to_string()));
+        }
+
+        Ok(AccessToken::Plain(s.to_string()))
+    }
+}
+
+impl Default for AccessToken {
+    fn default() -> Self {
+        AccessToken::Env("WORDSMITH_ACCESS_TOKEN".to_string())
+    }
+}
+
+impl Debug for AccessToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Env(variable) => f.debug_tuple("Env").field(variable).finish(),
+            Self::Plain(_) => f.debug_tuple("Plain").field(&"********").finish(),
+        }
+    }
+}
+
+impl Display for AccessToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AccessToken::Env(variable) => f.write_fmt(format_args!("${{{{ {} }}}}", variable)),
+            AccessToken::Plain(_) => f.write_str("********"),
+        }
+    }
+}
+
+impl AccessToken {
+    pub fn get_token(&self) -> Result<String, String> {
+        match self {
+            AccessToken::Env(variable) => env::var(variable).map_err(|err| err.to_string()),
+            AccessToken::Plain(token) => Ok(token.to_string()),
+        }
+    }
+}
+
+impl Serialize for AccessToken {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            AccessToken::Env(variable) => serializer.serialize_str(&format!("${{ {variable} }}")),
+            AccessToken::Plain(token) => serializer.serialize_str(token),
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for AccessToken {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
+        let raw_token = String::deserialize(deserializer)?;
+        AccessToken::from_str(&raw_token)
+            .map_err(|err| serde::de::Error::custom(err))
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Environment {
     pub project_id: u32,
-    pub token: String,
+    #[serde(default)]
+    pub token: AccessToken,
     #[serde(default)]
     pub targets: Vec<Target>
 }

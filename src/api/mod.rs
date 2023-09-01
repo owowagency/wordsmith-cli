@@ -3,6 +3,8 @@ use reqwest::{ClientBuilder, header::{HeaderMap, HeaderValue, InvalidHeaderValue
 use serde::de::DeserializeOwned;
 use thiserror::Error;
 
+use crate::environment::AccessToken;
+
 use self::models::error::ApiError;
 
 pub mod models;
@@ -48,14 +50,15 @@ impl From<reqwest::Error> for WordsmithError {
 }
 
 impl WordsmithClient {
-    pub fn new(token: Option<&str>) -> Result<Self> {
+    pub fn new(token: Option<&AccessToken>) -> Result<Self> {
         let user_agent = HeaderValue::from_str(USER_AGENT)?;
         let accept = HeaderValue::from_str("application/json")?;
         let mut headers = HeaderMap::new();
         headers.append("User-Agent", user_agent);
         headers.append("Accept", accept);
         if let Some(token) = token {
-            let token_header = HeaderValue::from_str(&format!("Bearer {}", token))?;
+            let raw_token = token.get_token().map_err(|op| WordsmithError::Init(op))?;
+            let token_header = HeaderValue::from_str(&format!("Bearer {}", raw_token))?;
             headers.append("Authorization", token_header);
         }
         let client = ClientBuilder::new()
