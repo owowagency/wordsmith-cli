@@ -11,15 +11,15 @@ impl PullArgs {
         &self, client: &WordsmithClient, 
         target: &TargetFile,
         tags: Option<&[Tag]>,
-        locales: &Vec<String>,
+        locales: &[String],
         dry_run: bool,
     ) -> Result<(), WordsmithError> {
         let mut pull_tasks = vec![];
 
         for locale in locales.iter() {
             let task = self.try_pull_locale(
-                &client, 
-                &target,
+                client, 
+                target,
                 tags,
                 locale.clone(), 
                 dry_run,
@@ -49,7 +49,7 @@ impl PullArgs {
                 target.write(&locale, &data).await
             };
 
-            if let Err(_) = result {
+            if result.is_err() {
                 error!("Failed to pull locale {:?} into {}", locale, output_path)
             }
             return result;

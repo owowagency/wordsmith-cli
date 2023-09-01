@@ -12,8 +12,8 @@ pub mod pull;
 pub mod push;
 pub mod info;
 
-const BASE_URL: &'static str = env!("BASE_URL");
-const USER_AGENT: &'static str = env!("USER_AGENT");
+const BASE_URL: &str = env!("BASE_URL");
+const USER_AGENT: &str = env!("USER_AGENT");
 
 pub struct WordsmithClient {
     headers: HeaderMap,
@@ -44,7 +44,7 @@ impl From<reqwest::Error> for WordsmithError {
     fn from(value: reqwest::Error) -> Self {
         let status = value.status();
         let url = value.url();
-        let message = format!("HTTP error [status: {:?}, url: {:?}], message: {}", status, url, value.to_string());
+        let message = format!("HTTP error [status: {:?}, url: {:?}], message: {}", status, url, value);
         WordsmithError::Http(message)
     }
 }
@@ -57,7 +57,7 @@ impl WordsmithClient {
         headers.append("User-Agent", user_agent);
         headers.append("Accept", accept);
         if let Some(token) = token {
-            let raw_token = token.get_token().map_err(|op| WordsmithError::Init(op))?;
+            let raw_token = token.get_token().map_err(WordsmithError::Init)?;
             let token_header = HeaderValue::from_str(&format!("Bearer {}", raw_token))?;
             headers.append("Authorization", token_header);
         }
@@ -90,7 +90,7 @@ impl WordsmithClient {
             }
             debug!("{}", buffer);
         }
-        return Ok(self.client.execute(request).await?);
+        Ok(self.client.execute(request).await?)
     }
 
     pub async fn execute<Res : DeserializeOwned>(&self, request: Request) -> Result<Res> {
@@ -127,7 +127,7 @@ impl WordsmithClient {
             return Err(WordsmithClient::decode_error_response(response).await);
         }
 
-        return Ok(response.bytes().await?.to_vec());
+        Ok(response.bytes().await?.to_vec())
     }
 
     async fn decode_error_response(response: Response) -> WordsmithError {

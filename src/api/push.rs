@@ -11,12 +11,12 @@ impl WordsmithClient {
         file_type: &str, 
         locale: &str,
         tags: Option<&[Tag]>,
-        data: &Vec<u8>,
+        data: &[u8],
         overwrite_existing_values: bool,
         verify_translations: bool,
     ) -> Result<(), WordsmithError> {
         let url = format!("{BASE_URL}/projects/{project_id}/translations/push");
-        let part = Part::bytes(data.clone()).file_name("testing.xml");
+        let part = Part::bytes(data.to_owned()).file_name("testing.xml");
         let mut form = Form::new()
             .part("file", part)
             .text("file_type", file_type.to_string())

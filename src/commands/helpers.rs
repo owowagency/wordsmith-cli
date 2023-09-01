@@ -36,7 +36,7 @@ impl TargetFile {
     }
 
     pub async fn read(&self, locale: &String) -> Result<Vec<u8>, WordsmithError> {
-        let path = self.target_path(&locale);
+        let path = self.target_path(locale);
         let path = Path::new(&path);
 
         let mut fh = File::open(path).await?;
@@ -46,8 +46,8 @@ impl TargetFile {
         Ok(buffer)
     }
 
-    pub async fn write(&self, locale: &String, data: &Vec<u8>) -> Result<(), WordsmithError> {
-        let path = self.target_path(&locale);
+    pub async fn write(&self, locale: &String, data: &[u8]) -> Result<(), WordsmithError> {
+        let path = self.target_path(locale);
         let path = Path::new(&path);
 
         if let Some(parent) = path.parent() {

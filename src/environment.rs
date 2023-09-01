@@ -1,4 +1,4 @@
-use std::{str::FromStr, fs::File, path::Path, env, fmt::{Debug, Display}, os::macos::raw};
+use std::{str::FromStr, fs::File, path::Path, env, fmt::{Debug, Display}};
 
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
@@ -71,7 +71,7 @@ impl<'de> Deserialize<'de> for AccessToken {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
         let raw_token = String::deserialize(deserializer)?;
         AccessToken::from_str(&raw_token)
-            .map_err(|err| serde::de::Error::custom(err))
+            .map_err(serde::de::Error::custom)
     }
 }
 
@@ -87,9 +87,9 @@ pub struct Environment {
 
 fn map_serde_yml_error(input: &str, err: &serde_yaml::Error) -> String {
     if let Some(location) = err.location() {
-        format!("{} in {} {}:{}",err.to_string(), input, location.line(), location.column())
+        format!("{} in {} {}:{}",err, input, location.line(), location.column())
     } else {
-        format!("{} in {}", err.to_string(), input)
+        format!("{} in {}", err, input)
     }
 }
 
@@ -131,9 +131,9 @@ pub struct TargetArgs {
 #[derive(Debug, Clone)]
 pub struct Tag(pub String);
 
-impl Into<String> for Tag {
-    fn into(self) -> String {
-        self.0
+impl From<Tag> for String {
+    fn from(val: Tag) -> Self {
+        val.0
     }
 }
 

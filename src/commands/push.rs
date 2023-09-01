@@ -8,18 +8,19 @@ use super::{Execute, helpers::TargetFile};
 
 impl PushArgs {
     async fn try_push_all(
-        &self, client: &WordsmithClient, 
+        &self, 
+        client: &WordsmithClient, 
         target: &TargetFile,
         tags: Option<&[Tag]>,
-        locales: &Vec<String>,
+        locales: &[String],
         dry_run: bool,
     ) -> Result<(), WordsmithError> {
         let mut pull_tasks = vec![];
 
         for locale in locales.iter() {
             let task = self.try_push_locale(
-                &client,
-                &target,
+                client,
+                target,
                 tags,
                 locale.clone(), 
                 dry_run,
@@ -56,7 +57,7 @@ impl PushArgs {
                 ).await
             };
 
-            if let Err(_) = result {
+            if result.is_err() {
                 error!("Failed to push locale {:?} from {}", locale, output_path)
             }
 

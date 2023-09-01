@@ -20,7 +20,7 @@ fn main() {
         match get_version() {
             Ok(version) => version,
             Err(err) => {
-                println!("cargo:warning={} (cause: {})", "Failed to generate version based on git tag and commit hash, falling back to 0.0.0-release", err);
+                println!("cargo:warning=Failed to generate version based on git tag and commit hash, falling back to 0.0.0-release (cause: {})", err);
                 "0.0.0-release".to_string()
             }
         }
