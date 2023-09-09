@@ -1,7 +1,10 @@
-use log::{error, log_enabled, debug};
-use reqwest::{ClientBuilder, header::{HeaderMap, HeaderValue, InvalidHeaderValue}, Client, StatusCode, Request, Response};
+use std::env;
+
+use log::{error, log_enabled, debug, warn, info};
+use reqwest::{ClientBuilder, header::{HeaderMap, HeaderValue, InvalidHeaderValue}, Client, StatusCode, Request, Response, Url};
 use serde::de::DeserializeOwned;
 use thiserror::Error;
+use url::ParseError;
 
 use crate::environment::AccessToken;
 
@@ -12,8 +15,7 @@ pub mod pull;
 pub mod push;
 pub mod info;
 
-const BASE_URL: &str = env!("BASE_URL");
-const USER_AGENT: &str = env!("USER_AGENT");
+const USER_AGENT: &'static str = env!("USER_AGENT");
 
 pub struct WordsmithClient {
     headers: HeaderMap,
@@ -36,6 +38,12 @@ pub enum WordsmithError {
 
 impl From<InvalidHeaderValue> for WordsmithError {
     fn from(value: InvalidHeaderValue) -> Self {
+        WordsmithError::Init(value.to_string())
+    }
+}
+
+impl From<ParseError> for WordsmithError {
+    fn from(value: ParseError) -> Self {
         WordsmithError::Init(value.to_string())
     }
 }
@@ -91,6 +99,26 @@ impl WordsmithClient {
             debug!("{}", buffer);
         }
         Ok(self.client.execute(request).await?)
+    }
+
+    pub fn format_url(url: &str) -> Result<Url> {
+        let base_url = if cfg!(feature = "configurable-base-url") {
+            match env::var("WORDSMITH_BASE_URL") {
+                Ok(base_url) => {
+                    info!("Using {base_url} from WORDSMITH_BASE_URL environment variable");
+                    base_url
+                },
+                Err(_) => {
+                    let base_url = env!("BASE_URL");
+                    warn!("WORDSMITH_BASE_URL environment variable not set, using {base_url} instead");
+                    base_url.to_owned()
+                },
+            }
+        } else {
+            env!("BASE_URL").to_owned()
+        };
+        
+        Ok(Url::parse(&base_url)?.join(&url)?)
     }
 
     pub async fn execute<Res : DeserializeOwned>(&self, request: Request) -> Result<Res> {

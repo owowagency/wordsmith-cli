@@ -2,11 +2,11 @@ use std::vec;
 
 use crate::{api::models::pull::PullResponse, environment::Tag};
 
-use super::{WordsmithClient, BASE_URL, WordsmithError};
+use super::{WordsmithClient, WordsmithError};
 
 impl WordsmithClient {
     pub async fn pull(&self, project_id: u32, file_type: &str, locale: &str, tags: Option<&[Tag]>,) -> Result<Vec<u8>, WordsmithError> {
-        let url = format!("{BASE_URL}/projects/{project_id}/translations/pull");
+        let url = WordsmithClient::format_url(&format!("projects/{project_id}/translations/pull"))?;
         let mut query: Vec<(String, String)> = vec![];
 
         query.push(("language".to_string(), locale.to_string()));

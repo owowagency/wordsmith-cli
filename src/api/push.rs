@@ -2,7 +2,7 @@ use reqwest::multipart::{Form, Part};
 
 use crate::environment::Tag;
 
-use super::{WordsmithClient, BASE_URL, WordsmithError};
+use super::{WordsmithClient, WordsmithError};
 
 impl WordsmithClient {
     pub async fn push(
@@ -15,7 +15,7 @@ impl WordsmithClient {
         overwrite_existing_values: bool,
         verify_translations: bool,
     ) -> Result<(), WordsmithError> {
-        let url = format!("{BASE_URL}/projects/{project_id}/translations/push");
+        let url = WordsmithClient::format_url(&format!("projects/{project_id}/translations/push"))?;
         let part = Part::bytes(data.to_owned()).file_name("testing.xml");
         let mut form = Form::new()
             .part("file", part)
