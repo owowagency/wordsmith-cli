@@ -46,10 +46,17 @@ impl Display for AccessToken {
     }
 }
 
+fn get_env_var(name: &str) -> Result<String, String> {
+    match env::var(name) {
+        Ok(var) => Ok(var),
+        Err(err) => Err(format!("{err} [{name}]")),
+    }
+}
+
 impl AccessToken {
     pub fn get_token(&self) -> Result<String, String> {
         match self {
-            AccessToken::Env(variable) => env::var(variable).map_err(|err| err.to_string()),
+            AccessToken::Env(variable) => get_env_var(&variable),
             AccessToken::Plain(token) => Ok(token.to_string()),
         }
     }
