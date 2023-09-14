@@ -51,6 +51,7 @@ jobs:
             artifact: target/release/wordsmith.exe
             file: wordsmith.exe
           - os: macos-latest
+            require-signing: true
             name: MacOS
             artifact: target/release/wordsmith
             file: wordsmith-macos
@@ -70,6 +71,14 @@ jobs:
         with:
           command: build
           args: --features "strict" --release
+      - if: ${{ matrix.require-signing }}
+        name: Sign binary
+        uses: lando/code-sign-action@v2
+        with:
+          file: ${{ matrix.file }}
+          certificate-data: ${{ secrets.APPLE_CERT_DATA }}
+          certificate-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+          apple-team-id: ${{ secrets.APPLE_TEAM_ID }}
       - run: cp ${{ matrix.artifact}} ${{ matrix.file }}
       - name: 📦 Release
         uses: softprops/action-gh-release@v1
