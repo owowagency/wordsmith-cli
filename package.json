@@ -1,15 +1,23 @@
 {
   "name": "wordsmith",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "repository": "git@github.com:owowagency/wordsmith-cli.git",
   "scripts": {
-    "semantic-release": "semantic-release"
+    "build": "tsc"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^10.0.1",
-    "@semantic-release/release-notes-generator": "^11.0.4",
-    "semantic-release": "^21.0.7"
-  }
+    "@types/node": "^20.8.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "bin": {
+    "wordsmith": "./dist/index.js"
+  },
+  "files": [
+    "package.json",
+    "README.md",
+    "./dist/**",
+    "./bin/**"
+  ]
 }
