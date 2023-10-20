@@ -22,7 +22,7 @@ const supported: Platform[] = [
     },
     {
         name: 'linux',
-        architectures: ['x64'],
+        architectures: ['x64', 'arm64'],
     }
 ];
 
