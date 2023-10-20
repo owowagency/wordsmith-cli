@@ -2,4 +2,7 @@
 /locales
 /node_modules
 /docs
+/dist
+/bin
 wordsmith.yml
+.npmrc
