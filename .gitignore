@@ -6,3 +6,4 @@
 /bin
 wordsmith.yml
 .npmrc
+.DS_Store
