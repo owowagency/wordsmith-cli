@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {spawnSync} from 'child_process';
 import {resolve} from 'path';
 import {chmodSync, constants} from 'fs';
