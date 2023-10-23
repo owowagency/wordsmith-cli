@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-if ('cli' !== PHP_SAPI) {
-    throw new Exception('This script must be run from the command line.');
-}
-
 class Wordsmith {
     public static function run(array $arguments): int {
+        if ('cli' !== PHP_SAPI) {
+            fwrite(STDERR, 'This script must be run from the command line.');
+            return static::ERR_NOT_CLI;
+        }
+
         $arch = static::get_architecture();
         $platform = static::get_platform();
 
@@ -56,6 +57,7 @@ class Wordsmith {
     ];
 
     private const ERR_UNSUPPORTED_PLATFORM = 1;
+    private const ERR_NOT_CLI = 2;
 }
 
 $exit_code = Wordsmith::run(array_slice($argv, 1));
