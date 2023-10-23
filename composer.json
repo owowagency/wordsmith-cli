@@ -1,0 +1,19 @@
+{
+    "name": "owowagency/wordsmith-cli",
+    "version": "1.1.2",
+    "autoload": {
+        "psr-4": {
+            "owowagency\\": "composer/"
+        }
+    },
+    "authors": [
+        {
+            "name": "owowagency",
+            "email": "owow@owow.io"
+        }
+    ],
+    "require": {},
+    "scripts": {
+        "wordsmith": "owowagency\\Wordsmith::run"
+    }
+}

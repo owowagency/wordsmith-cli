@@ -1,0 +1,18 @@
+#!/bin/bash
+
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+VERSION=$(cat "$PWD/composer.json" | jq -r '.version')
+PACKAGE="wordsmith-cli-$VERSION.tar.gz"
+
+FILES=(
+    "README.md"
+    "composer.json" 
+    "composer" 
+    "bin"
+)
+
+tar --exclude=".*" -czf $PACKAGE $(printf " %s" "${FILES[@]}")
+echo -e "Created package: ${GREEN}$PACKAGE${NC}"
+tar -tvf $PACKAGE

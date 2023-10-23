@@ -7,3 +7,5 @@
 wordsmith.yml
 .npmrc
 .DS_Store
+/vendor/
+*.tar.gz
