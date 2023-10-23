@@ -52,7 +52,7 @@ class Wordsmith {
 
     private static $architecture_mapping = [
         'aarch64' => 'arm64',
-        'x84_64' => 'x64',
+        'x86_64' => 'x64',
     ];
 
     private const ERR_UNSUPPORTED_PLATFORM = 1;
