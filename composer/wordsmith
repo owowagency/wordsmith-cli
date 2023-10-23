@@ -58,4 +58,5 @@ class Wordsmith {
     private const ERR_UNSUPPORTED_PLATFORM = 1;
 }
 
-Wordsmith::run(array_slice($argv, 1));
+$exit_code = Wordsmith::run(array_slice($argv, 1));
+exit($exit_code);
