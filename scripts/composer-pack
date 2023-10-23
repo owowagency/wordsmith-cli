@@ -1,7 +1,18 @@
 #!/bin/bash
 
+DEPENDENCIES=("jq" "tar" "cat")
 GREEN='\033[0;32m'
+RED='\033[0;31m'
 NC='\033[0m'
+
+for cmd in "${DEPENDENCIES[@]}"
+do
+    if ! command -v "$cmd" &> /dev/null
+    then
+        echo -e "Missing requirement: \"${RED}$cmd${NC}\""
+        exit 1
+    fi
+done
 
 VERSION=$(cat "$PWD/composer.json" | jq -r '.version')
 PACKAGE="wordsmith-cli-$VERSION.tar.gz"
@@ -9,10 +20,10 @@ PACKAGE="wordsmith-cli-$VERSION.tar.gz"
 FILES=(
     "README.md"
     "composer.json" 
-    "composer" 
+    "composer"
     "bin"
 )
 
-tar --exclude=".*" -czf $PACKAGE $(printf " %s" "${FILES[@]}")
+tar --exclude=".__*" --exclude=".*" -czf $PACKAGE $(printf " %s" "${FILES[@]}")
 echo -e "Created package: ${GREEN}$PACKAGE${NC}"
 tar -tvf $PACKAGE

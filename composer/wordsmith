@@ -1,11 +1,12 @@
+#!/usr/bin/env php
 <?php
 
-namespace owowagency;
-
-use Composer\Script\Event;
+if ('cli' !== PHP_SAPI) {
+    throw new Exception('This script must be run from the command line.');
+}
 
 class Wordsmith {
-    public static function run(Event $event): int {
+    public static function run(array $arguments): int {
         $arch = static::get_architecture();
         $platform = static::get_platform();
 
@@ -20,7 +21,7 @@ class Wordsmith {
         }
 
         $pwd = dirname(__FILE__);
-        $args = join(' ', $event->getArguments());
+        $args = join(' ', $arguments);
         $binary_postfix = $platform === 'win32' ? '.exe' : '';
         $binary_name = "wordsmith$binary_postfix";
         $binary = realpath(join(DIRECTORY_SEPARATOR, [$pwd, '..', 'bin', $platform, $arch, $binary_name]));
@@ -57,3 +58,4 @@ class Wordsmith {
     private const ERR_UNSUPPORTED_PLATFORM = 1;
 }
 
+Wordsmith::run(array_slice($argv, 1));
