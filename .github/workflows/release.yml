@@ -20,7 +20,7 @@ jobs:
             apt: musl-tools
           - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
-            apt: musl-tools gcc-aarch64-linux-gnu
+            apt: musl-tools gcc-aarch64-linux-gnu musl-dev
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             ext: .exe
