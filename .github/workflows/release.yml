@@ -41,11 +41,12 @@ jobs:
         with:
           command: build
           args: --features "strict" --release --target ${{ matrix.platform.target }}
+      - run: cp "target/${{ matrix.platform.target }}/release/wordsmith" "target/${{ matrix.platform.target }}/release/wordsmith-${{ matrix.platform.target }}"
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: "wordsmith-${{ matrix.platform.target }}"
-          path: "target/${{ matrix.platform.target }}/release/wordsmith"
+          name: binaries
+          path: "target/${{ matrix.platform.target }}/release/wordsmith-${{ matrix.platform.target }}"
           retention-days: 1
     
   release:
@@ -56,6 +57,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
+          name: binaries
           path: bin/
       - name: List artifacts
         run: ls -lRa
