@@ -52,19 +52,15 @@ Wordsmith CLI accepts YAML configuration files, the default configuration file i
 
 ### Targets
 
+Any remaining properties will be passed on to the API when pushing or pulling.
+
 | name | type | description |
 |---|---|---|
 | `file` | `String` | Path to the translation file, `{locale}` will be replaced with the locale e.g. `values-{locale}/strings.xml` will become `values-en/strings.xml` |
 | `default-locale-override` | `String?` | Path override for the default locale, this may be useful on Android where the default strings are stored in `values/` instead of `values-{locale}/` |
 | `types` | `(pull \| push)[]` | Enables push and/or pull for this target |
-| `args` | `Arguments` | See [Arguments](#arguments) |
-
-### Arguments
-
-| name | type | description |
-|---|---|---|
 | `file-type` | `String` | The file format of the translation file, see [Supported formats](#supported-formats) |
-| `tags` | `String[]?` | Pull only translations with given tags or attach tags to pushed translations |
+| `tags` | `String[]` | Pull only translations with given tags or attach tags to pushed translations, defaults to `[]` |
 
 ### Supported formats
 
@@ -91,25 +87,22 @@ targets:
     types: 
       - push
       - pull
-    # Arguments for this target
-    args:
-      # Format of the file, possible values: 
-      # - apple-strings (iOS Localizable string files)
-      # - android-strings (XML Android string files)
-      # - csv
-      # - i18next
-      # - json
-      file-type: android-strings
-      # [Optional] tags to include when pulling/pushing this file
-      tags: 
-        - app
+    # Format of the file, possible values: 
+    # - apple-strings (iOS Localizable string files)
+    # - android-strings (XML Android string files)
+    # - csv
+    # - i18next
+    # - json
+    file-type: android-strings
+    # [Optional] tags to include when pulling/pushing this file
+    tags: 
+      - app
   - file: locales/values-{locale}/strings-library.xml
     default-locale-override: locales/values/strings-library.xml
     types: 
       - push
       - pull
-    args:
-      file-type: android-strings
-      tags: 
-        - library
+    file-type: android-strings
+    tags: 
+      - library
 ```

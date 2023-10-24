@@ -11,20 +11,20 @@ impl From<std::io::Error> for WordsmithError {
     }
 }
 
-pub struct TargetFile {
-    pub r#type: String,
+pub struct TargetFile<'a> {
     pub path: String,
     pub path_override: Option<String>,
     pub default_locale: String,
+    pub target: &'a Target,
 }
 
-impl TargetFile {
-    pub fn from(project: &ProjectResponse, target: &Target) -> Self {
+impl<'a> TargetFile<'a> {
+    pub fn from(project: &ProjectResponse, target: &'a Target) -> Self {
         Self {
-            r#type: target.args.file_type.clone(),
             path: target.file.clone(),
             path_override: target.default_locale_override.clone(),
             default_locale: project.default_locale.clone(),
+            target: target,
         }
     }
 
@@ -65,7 +65,7 @@ impl TargetFile {
 }
 
 pub fn get_locales(project: &ProjectResponse, target: &Target) -> Vec<String> {
-    match target.args.locales.clone() {
+    match target.locales.clone() {
         Some(locales) => locales,
         None => project.locales.clone()
     }

@@ -2,16 +2,15 @@ use async_trait::async_trait;
 use futures::future::try_join_all;
 use log::{info, error};
 
-use crate::{cli::{PushArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType, Tag}, commands::helpers::get_locales};
+use crate::{cli::{PushArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType}, commands::helpers::get_locales};
 
 use super::{Execute, helpers::TargetFile};
 
 impl PushArgs {
-    async fn try_push_all(
+    async fn try_push_all<'a>(
         &self, 
         client: &WordsmithClient, 
-        target: &TargetFile,
-        tags: Option<&[Tag]>,
+        target: &TargetFile<'a>,
         locales: &[String],
         dry_run: bool,
     ) -> Result<(), WordsmithError> {
@@ -21,7 +20,6 @@ impl PushArgs {
             let task = self.try_push_locale(
                 client,
                 target,
-                tags,
                 locale.clone(), 
                 dry_run,
             );
@@ -33,11 +31,10 @@ impl PushArgs {
         Ok(())
     }
 
-    async fn try_push_locale(
+    async fn try_push_locale<'a>(
         &self, 
         client: &WordsmithClient, 
-        target: &TargetFile,
-        tags: Option<&[Tag]>,
+        target: &TargetFile<'a>,
         locale: String,
         dry_run: bool,
     ) -> Result<(), WordsmithError> {
@@ -48,9 +45,8 @@ impl PushArgs {
                 let data = target.read(&locale).await?;
                 client.push(
                     self.global.env.project_id, 
-                    &target.r#type, 
+                    &target.target, 
                     &locale, 
-                    tags,
                     &data,
                     self.overwrite,
                     self.verify,
@@ -91,7 +87,7 @@ impl Execute for PushArgs {
                 let local_target = target.clone();
                 let locales = get_locales(&project, &local_target);
                 let file_target = TargetFile::from(&project, &local_target);
-                self.try_push_all(&client, &file_target, target.args.tags.as_deref(), &locales, self.dry_run).await
+                self.try_push_all(&client, &file_target, &locales, self.dry_run).await
             };
             
             pull_tasks.push(task);

@@ -109,13 +109,13 @@ impl WordsmithClient {
                     base_url
                 },
                 Err(_) => {
-                    let base_url = env!("BASE_URL");
+                    let base_url = env!("WORDSMITH_BASE_URL");
                     warn!("WORDSMITH_BASE_URL environment variable not set, using {base_url} instead");
                     base_url.to_owned()
                 },
             }
         } else {
-            env!("BASE_URL").to_owned()
+            env!("WORDSMITH_BASE_URL").to_owned()
         };
         
         Ok(Url::parse(&base_url)?.join(&url)?)
