@@ -17,9 +17,10 @@ jobs:
             os: macos-latest
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
+            apt: musl-tools
           - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
-            # apt: gcc-aarch64-linux-gnu
+            apt: musl-tools
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             ext: .exe
