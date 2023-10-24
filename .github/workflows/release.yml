@@ -15,12 +15,11 @@ jobs:
             os: macos-latest
           - target: x86_64-apple-darwin
             os: macos-latest
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-latest
-            apt: musl-tools
-          - target: aarch64-unknown-linux-musl
-            os: ubuntu-latest
-            apt: musl-tools gcc-aarch64-linux-gnu musl-dev
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-20.04
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-20.04
+            apt: gcc-aarch64-linux-gnu
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             ext: .exe
@@ -71,8 +70,8 @@ jobs:
           files: |
               bin/wordsmith-aarch64-apple-darwin
               bin/wordsmith-x86_64-apple-darwin
-              bin/wordsmith-x86_64-unknown-linux-musl
-              bin/wordsmith-aarch64-unknown-linux-musl
+              bin/wordsmith-x86_64-unknown-linux-gnu
+              bin/wordsmith-aarch64-unknown-linux-gnu
               bin/wordsmith-x86_64-pc-windows-msvc.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
