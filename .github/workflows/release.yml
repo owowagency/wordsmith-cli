@@ -29,6 +29,8 @@ jobs:
     runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -58,6 +60,9 @@ jobs:
     name: 🚀 Release
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/download-artifact@v3
         with:
           name: binaries
