@@ -14,5 +14,6 @@ if (match && match.groups && 'version' in match.groups) {
     console.log(`WORDSMITH_CLI_VERSION=${match.groups['version']}`);
     process.exit(0);
 } else {
+    console.error('Did not find next release in command output', output);
     process.exit(1);
 }
