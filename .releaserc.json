@@ -44,7 +44,8 @@
           "docs", 
           "package.json", 
           "composer.json", 
-          "Cargo.toml"
+          "Cargo.toml",
+          "Cargo.lock"
         ],
         "message": "chore(release): ${nextRelease.version} [skip ci]"
       }
