@@ -1,13 +1,34 @@
 {
-  "branches": ["master", "rust/mvp"],
-  "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
-    [
-      "@semantic-release/changelog",
+  "branches": [
+      "master",
       {
-        "changelogFile": "docs/CHANGELOG.md"
+        "name": "rust/mvp",
+        "prerelease": true
+      },
+      {
+          "name": "staging",
+          "prerelease": true
+      },
+      {
+          "name": "develop",
+          "prerelease": true
       }
-    ]
-  ]
+  ],
+  "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+          "@semantic-release/github",
+          {
+              "assets": [
+                "bin/wordsmith-aarch64-apple-darwin",
+                "bin/wordsmith-x86_64-apple-darwin",
+                "bin/wordsmith-x86_64-unknown-linux-gnu",
+                "bin/wordsmith-aarch64-unknown-linux-gnu",
+                "bin/wordsmith-x86_64-pc-windows-msvc.exe"
+              ]
+          }
+      ]
+  ],
+  "tagFormat": "${version}"
 }
