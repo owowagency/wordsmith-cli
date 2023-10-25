@@ -1,6 +1,6 @@
 {
     "name": "owowagency/wordsmith-cli",
-    "version": "1.0.0",
+    "version": "1.6.0-RC.2",
     "type": "library",
     "bin": [
         "composer/wordsmith"

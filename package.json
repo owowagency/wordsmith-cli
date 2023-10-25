@@ -1,6 +1,6 @@
 {
   "name": "@owowagency/wordsmith-cli",
-  "version": "1.6.0-RC.1",
+  "version": "1.6.0-RC.2",
   "private": false,
   "scripts": {
     "build": "tsc",
