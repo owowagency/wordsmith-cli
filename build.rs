@@ -4,29 +4,38 @@ fn main() {
     // Set environment variables from {profile}.env
     println!("cargo:rerun-if-env-changed=PROFILE");
     let profile = std::env::var("PROFILE").unwrap_or("debug".to_string());
-    let path = format!("{profile}.env");
-    println!("cargo:rerun-if-changed={path}");
+    let mut version = "0.0.0-dev".to_string();
 
-    let path = dotenv::from_filename(path).unwrap();
-    dotenv::from_path(path).unwrap();
+    if profile == "release" {
+        let path = format!("{profile}.env");
+        println!("cargo:rerun-if-changed={path}");
+    
+        let path = dotenv::from_filename(path).unwrap();
+        dotenv::from_path(path).unwrap();
+    
+        for (key, value) in dotenv::vars() {
+            println!("cargo:rustc-env={key}={value}");
+        }
 
-    for (key, value) in dotenv::vars() {
-        println!("cargo:rustc-env={key}={value}");
-    }
-
-    // Set CARGO_PKG_VERSION based on git tag
-    let version = if profile == "release" {
         println!("cargo:rerun-if-changed=.git/");
         match get_version() {
-            Ok(version) => version,
+            Ok(v) => {
+                version = v;
+            },
             Err(err) => {
                 println!("cargo:warning=Failed to generate version based on git tag and commit hash, falling back to 0.0.0-release (cause: {})", err);
-                "0.0.0-release".to_string()
+                version = "0.0.0-release".to_string();
             }
         }
     } else {
-         "0.0.0-dev".to_string()
-    };
+        println!("cargo:rerun-if-env-changed=WORDSMITH_BASE_URL");
+        if let Ok(base_url) = std::env::var("WORDSMITH_BASE_URL") {
+            println!("cargo:rustc-env={}={}", "WORDSMITH_BASE_URL", base_url);
+        } else {
+            println!("cargo:rustc-env={}={}", "WORDSMITH_BASE_URL", "http://localhost:8000");
+        }
+    }
+    
     let user_agent = format!("Wordsmith CLI {}", version);
     println!("cargo:rustc-env=USER_AGENT={}", user_agent);
     println!("cargo:rustc-env=CARGO_PKG_VERSION={}", version);

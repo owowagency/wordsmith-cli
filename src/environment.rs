@@ -1,4 +1,4 @@
-use std::{str::FromStr, fs::File, path::Path, env, fmt::{Debug, Display}};
+use std::{str::FromStr, fs::File, path::Path, env, fmt::{Debug, Display}, collections::HashMap};
 
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
@@ -124,15 +124,32 @@ pub struct Target {
     pub file: String,
     pub default_locale_override: Option<String>,
     pub types: Vec<TargetType>,
-    pub args: TargetArgs,
+    pub file_type: String,
+    pub locales: Option<Vec<String>>,
+    #[serde(default)]
+    pub tags: Vec<Tag>,
+    #[serde(flatten, default)]
+    pub extras: HashMap<String, Any>
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "kebab-case")]
-pub struct TargetArgs {
-    pub file_type: String,
-    pub locales: Option<Vec<String>>,
-    pub tags: Option<Vec<Tag>>
+#[serde(untagged)]
+pub enum Any {
+    Integer(i64),
+    Float(f64),
+    Bool(bool),
+    String(String)
+}
+
+impl ToString for Any {
+    fn to_string(&self) -> String {
+        match self {
+            Any::Integer(i) => i.to_string(),
+            Any::Float(f) => f.to_string(),
+            Any::Bool(b) => b.to_string(),
+            Any::String(s) => s.to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

@@ -1,0 +1,14 @@
+{
+    "name": "owowagency/wordsmith-cli",
+    "version": "1.5.16",
+    "type": "library",
+    "bin": [
+        "composer/wordsmith"
+    ],
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.8"
+    },
+    "autoload": {
+        "psr-4": {"OwowAgency\\": "composer/"}
+    }
+}

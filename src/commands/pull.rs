@@ -2,15 +2,14 @@ use async_trait::async_trait;
 use futures::future::try_join_all;
 use log::{info, error};
 
-use crate::{cli::{PullArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType, Tag}, commands::helpers::get_locales};
+use crate::{cli::{PullArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType}, commands::helpers::get_locales};
 
 use super::{Execute, helpers::TargetFile};
 
 impl PullArgs {
-    async fn try_pull_all(
+    async fn try_pull_all<'a>(
         &self, client: &WordsmithClient, 
-        target: &TargetFile,
-        tags: Option<&[Tag]>,
+        target: &TargetFile<'a>,
         locales: &[String],
         dry_run: bool,
     ) -> Result<(), WordsmithError> {
@@ -20,7 +19,6 @@ impl PullArgs {
             let task = self.try_pull_locale(
                 client, 
                 target,
-                tags,
                 locale.clone(), 
                 dry_run,
             );
@@ -32,11 +30,10 @@ impl PullArgs {
         Ok(())
     }
 
-    async fn try_pull_locale(
+    async fn try_pull_locale<'a>(
         &self, 
         client: &WordsmithClient, 
-        target: &TargetFile,
-        tags: Option<&[Tag]>,
+        target: &TargetFile<'a>,
         locale: String,
         dry_run: bool,
     ) -> Result<(), WordsmithError> {
@@ -45,7 +42,7 @@ impl PullArgs {
 
         if !dry_run {
             let result = {
-                let data = client.pull(self.global.env.project_id, &target.r#type, &locale, tags).await?;
+                let data = client.pull(self.global.env.project_id, &target.target, &locale).await?;
                 target.write(&locale, &data).await
             };
 
@@ -84,7 +81,7 @@ impl Execute for PullArgs {
                 let local_target = target.clone();
                 let locales = get_locales(&project, &local_target);
                 let file_target = TargetFile::from(&project, &local_target);
-                self.try_pull_all(&client, &file_target, target.args.tags.as_deref(), &locales, self.dry_run).await
+                self.try_pull_all(&client, &file_target, &locales, self.dry_run).await
             };
             
             pull_tasks.push(task);
