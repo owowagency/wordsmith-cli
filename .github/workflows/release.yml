@@ -69,7 +69,7 @@ jobs:
           path: bin/
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.16.0"
+          node-version: "18.17.0"
       - run: yarn
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
