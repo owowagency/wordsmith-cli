@@ -36,9 +36,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    },
-    "analyzeCommits": {
-      "path": "./node_modules/@semantic-release/commit-analyzer"
     }
   }
 }

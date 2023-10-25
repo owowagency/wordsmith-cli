@@ -1,41 +1,34 @@
 {
   "branches": [
-      "master",
-      {
-          "name": "rust/mvp",
-          "prerelease": "alpha"
-      },
-      {
-          "name": "staging",
-          "prerelease": "RC"
-      },
-      {
-          "name": "develop",
-          "prerelease": "beta"
-      }
+    "master",
+    {
+      "name": "rust/mvp",
+      "prerelease": "alpha"
+    },
+    {
+      "name": "staging",
+      "prerelease": "RC"
+    },
+    {
+      "name": "develop",
+      "prerelease": "beta"
+    }
   ],
   "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
     [
-      "@semantic-release/commit-analyzer",
+      "@semantic-release/github",
       {
-        "preset": "conventionalcommits",
-        "releaseRules": [],
-        "parserOpts": {}
+        "assets": [
+          "bin/wordsmith-aarch64-apple-darwin",
+          "bin/wordsmith-x86_64-apple-darwin",
+          "bin/wordsmith-x86_64-unknown-linux-gnu",
+          "bin/wordsmith-aarch64-unknown-linux-gnu",
+          "bin/wordsmith-x86_64-pc-windows-msvc.exe"
+        ]
       }
-    ],
-      "@semantic-release/release-notes-generator",
-      [
-          "@semantic-release/github",
-          {
-              "assets": [
-                "bin/wordsmith-aarch64-apple-darwin",
-                "bin/wordsmith-x86_64-apple-darwin",
-                "bin/wordsmith-x86_64-unknown-linux-gnu",
-                "bin/wordsmith-aarch64-unknown-linux-gnu",
-                "bin/wordsmith-x86_64-pc-windows-msvc.exe"
-              ]
-          }
-      ]
+    ]
   ],
   "tagFormat": "${version}"
 }
