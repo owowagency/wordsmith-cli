@@ -11,7 +11,7 @@ const output = execSync('yarn semantic-release --verify-conditions --dry-run', {
 const match = pattern.exec(output);
 
 if (match && match.groups && 'version' in match.groups) {
-    console.log(`WORDSMITH_CLI_VERSION=${match.groups['version']}`);
+    console.log(`next_version=${match.groups['version']}`);
     process.exit(0);
 } else {
     console.error('Did not find next release in command output', output);

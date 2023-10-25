@@ -46,14 +46,12 @@ jobs:
         with:
           node-version: "18.17.0"
       - run: yarn
-      - if: matrix.platform.os != 'windows-latest'
-        run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
-      - if: matrix.platform.os == 'windows-latest'
-        run: ./scripts/get-next-version.js | Out-File -FilePath $env:GITHUB_ENV
+      - run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
       - name: 🏗️ Cargo build
         uses: actions-rs/cargo@v1
         env:
           WORDSMITH_BASE_URL: https://wordsmith.owow.codes
+          WORDSMITH_CLI_VERSION: ${{ env.next_version }}
         with:
           command: build
           args: --features "strict" --release --target ${{ matrix.platform.target }}
