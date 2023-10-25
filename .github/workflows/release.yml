@@ -42,8 +42,15 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y ${{ matrix.platform.apt }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.0"
+      - run: yarn
+      - run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
       - name: 🏗️ Cargo build
         uses: actions-rs/cargo@v1
+        env:
+          WORDSMITH_BASE_URL: https://wordsmith.owow.codes
         with:
           command: build
           args: --features "strict" --release --target ${{ matrix.platform.target }}
