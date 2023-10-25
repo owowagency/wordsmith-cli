@@ -29,6 +29,13 @@
         ]
       }
     ],
+    [
+      "@semantic-release/exec", 
+      {
+        "verifyConditionsCmd": "./scripts/update-versions-verify.js",
+        "prepareCmd": "./scripts/update-versions-prepare.js ${nextRelease.version}"
+      }
+    ],
     "@semantic-release/npm",
     [
       "@semantic-release/git", 
