@@ -3,7 +3,7 @@
 const {execSync} = require('child_process');
 
 const pattern = /Release note for version (?<version>.+):$/gm
-const output = execSync('yarn semantic-release --verify-conditions', {
+const output = execSync('yarn semantic-release --verify-conditions --dry-run', {
     encoding: 'utf-8', 
     stdio: 'pipe',
 });
