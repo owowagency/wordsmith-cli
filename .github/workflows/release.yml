@@ -1,7 +1,10 @@
 on:
   push:
-    tags:   
-      - 'v*'
+    branches:
+      - master
+      - staging
+      - develop
+      - rust/mvp
 
 name: Release
 
@@ -55,24 +58,15 @@ jobs:
     name: 🚀 Release
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: binaries
           path: bin/
-      - name: List artifacts
-        run: ls -lRa
-      - name: Create Github Release (Replace with semantic release)
-        uses: softprops/action-gh-release@v1
+      - uses: actions/setup-node@v3
         with:
-          body: ''
-          append_body: true
-          files: |
-              bin/wordsmith-aarch64-apple-darwin
-              bin/wordsmith-x86_64-apple-darwin
-              bin/wordsmith-x86_64-unknown-linux-gnu
-              bin/wordsmith-aarch64-unknown-linux-gnu
-              bin/wordsmith-x86_64-pc-windows-msvc.exe
-        env:
+          node-version: "18.16.0"
+      - run: yarn
+      - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn semantic-release
 
