@@ -8,3 +8,4 @@ wordsmith.yml
 .DS_Store
 /vendor/
 *.tar.gz
+/bin/*

@@ -2,42 +2,59 @@
 
 import {spawnSync} from 'child_process';
 import {resolve} from 'path';
-import {chmodSync, constants} from 'fs';
+import {chmodSync, constants, linkSync, existsSync} from 'fs';
 
 const commandArgs = process.argv.slice(2);
 
-interface Platform {
-    name: NodeJS.Platform,
-    architectures: NodeJS.Architecture[],
+interface BinaryLocation {
+    platform: NodeJS.Platform,
+    arch: NodeJS.Architecture,
+    path: string,
 }
 
-const supported: Platform[] = [
+const binaries: BinaryLocation[] = [
     {
-        name: 'win32',
-        architectures: ['x64'],
+        platform: 'linux',
+        arch: 'arm64',
+        path: resolve(__dirname, '..', 'bin', 'wordsmith-aarch64-unknown-linux-gnu'),
     },
     {
-        name: 'darwin',
-        architectures: ['arm64'],
+        platform: 'linux',
+        arch: 'x64',
+        path: resolve(__dirname, '..', 'bin', 'wordsmith-x86_64-unknown-linux-gnu'),
     },
     {
-        name: 'linux',
-        architectures: ['x64', 'arm64'],
+        platform: 'darwin',
+        arch: 'arm64',
+        path: resolve(__dirname, '..', 'bin', 'wordsmith-aarch64-apple-darwin'),
+    },
+    {
+        platform: 'darwin',
+        arch: 'x64',
+        path: resolve(__dirname, '..', 'bin', 'wordsmith-x86_64-apple-darwin'),
+    },
+    {
+        platform: 'win32',
+        arch: 'x64',
+        path: resolve(__dirname, '..', 'bin', 'wordsmith-x86_64-pc-windows-msvc.exe'),
     }
-];
+]
 
-const platform = supported.find(p => p.name === process.platform);
+const binary = binaries.find(b => b.arch === process.arch && b.platform === process.platform)
 
-if (!(platform && platform.architectures.find(a => a === process.arch))) {
+if (!binary) {
     throw new Error(`Unsupported platform: "${process.platform}" [${process.arch}]`);
 }
 
-const binaryPostfix = process.platform === 'win32' ? '.exe' : '';
-const binaryName = 'wordsmith';
-const binary = resolve(__dirname, '..', 'bin', process.platform, process.arch, `${binaryName}${binaryPostfix}`);
+chmodSync(binary.path, constants.S_IXUSR | constants.S_IRUSR);
 
-chmodSync(binary, constants.S_IXUSR | constants.S_IRUSR);
-spawnSync(binary, commandArgs, {
+const path = resolve(__dirname, '..', 'bin', 'wordsmith');
+
+if (!existsSync(path)) {
+    linkSync(binary.path, path);
+}
+
+spawnSync(path, commandArgs, {
     shell: true,
     stdio: 'inherit',
 });
