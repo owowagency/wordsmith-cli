@@ -46,7 +46,10 @@ jobs:
         with:
           node-version: "18.17.0"
       - run: yarn
-      - run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
+      - if: matrix.platform.os != 'windows-latest'
+        run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
+      - if: matrix.platform.os == 'windows-latest'
+        run: ./scripts/get-next-version.js | Out-File -FilePath $env:GITHUB_ENV
       - name: 🏗️ Cargo build
         uses: actions-rs/cargo@v1
         env:
