@@ -91,6 +91,7 @@ jobs:
         with:
           node-version: "18.17.0"
       - run: yarn
+      - run: yarn build
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
