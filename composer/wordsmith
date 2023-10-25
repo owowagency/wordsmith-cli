@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+if ('cli' !== PHP_SAPI) {
+    fwrite(STDERR, 'This script must be run from the command line.');
+    exit(1);
+}
+
+include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+
+use OwowAgency\WordsmithCLI;
+
+$instance = new WordsmithCLI();
+
+try {
+    $instance->run(array_slice($argv, 1));
+} catch (\Exception $e) {
+    fwrite(STDERR, $e->getMessage());
+    fwrite(STDERR, "\n");
+    exit($e->getCode());
+}
+
+exit(0);

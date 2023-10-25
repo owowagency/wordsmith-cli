@@ -1,0 +1,11 @@
+/target
+/locales
+/node_modules
+/docs
+/dist
+wordsmith.yml
+.npmrc
+.DS_Store
+/vendor/
+*.tar.gz
+/bin/*

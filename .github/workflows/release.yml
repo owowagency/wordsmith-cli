@@ -1,0 +1,99 @@
+on:
+  push:
+    branches:
+      - master
+      - staging
+      - develop
+      - rust/mvp
+
+name: Release
+
+jobs:
+  build:
+    name: 📦 Build ${{ matrix.platform.target }}
+    strategy:
+      matrix:
+        platform:
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-20.04
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-20.04
+            apt: gcc-aarch64-linux-gnu
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            ext: .exe
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Add target
+        run: rustup target add ${{ matrix.platform.target }}
+      - name: Install APT dependencies
+        if: ${{ matrix.platform.apt }}
+        run: |
+          sudo apt update
+          sudo apt install -y ${{ matrix.platform.apt }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.0"
+      - run: yarn
+      - run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
+      - name: Set up cargo cache
+        uses: actions/cache@v3
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/            
+          key: ${{ matrix.platform.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ matrix.platform.target }}-cargo-
+      - name: 🏗️ Cargo build
+        uses: actions-rs/cargo@v1
+        env:
+          WORDSMITH_BASE_URL: https://wordsmith.owow.codes
+          WORDSMITH_CLI_VERSION: ${{ env.next_version }}
+        with:
+          command: build
+          args: --features "strict" --release --target ${{ matrix.platform.target }}
+      - run: cp "target/${{ matrix.platform.target }}/release/wordsmith${{ matrix.platform.ext }}" "target/${{ matrix.platform.target }}/release/wordsmith-${{ matrix.platform.target }}${{ matrix.platform.ext }}"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: "target/${{ matrix.platform.target }}/release/wordsmith-${{ matrix.platform.target }}${{ matrix.platform.ext }}"
+          retention-days: 1
+    
+  release:
+    needs: build
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v3
+        with:
+          name: binaries
+          path: bin/
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.0"
+      - run: yarn
+      - run: yarn build
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn semantic-release
+
