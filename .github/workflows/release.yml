@@ -47,6 +47,18 @@ jobs:
           node-version: "18.17.0"
       - run: yarn
       - run: ./scripts/get-next-version.js >> "$GITHUB_ENV"
+      - name: Set up cargo cache
+        uses: actions/cache@v3
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/            
+          key: ${{ matrix.platform.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ matrix.platform.target }}-cargo-
       - name: 🏗️ Cargo build
         uses: actions-rs/cargo@v1
         env:
@@ -81,5 +93,6 @@ jobs:
       - run: yarn
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: yarn semantic-release
 
