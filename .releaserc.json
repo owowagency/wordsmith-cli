@@ -2,16 +2,16 @@
   "branches": [
       "master",
       {
-        "name": "rust/mvp",
-        "prerelease": true
+          "name": "rust/mvp",
+          "prerelease": "alpha"
       },
       {
           "name": "staging",
-          "prerelease": true
+          "prerelease": "RC"
       },
       {
           "name": "develop",
-          "prerelease": true
+          "prerelease": "beta"
       }
   ],
   "plugins": [
