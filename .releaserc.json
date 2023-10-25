@@ -29,7 +29,18 @@
         ]
       }
     ],
-    "@semantic-release/npm"
+    "@semantic-release/npm",
+    [
+      "@semantic-release/git", 
+      {
+        "assets": [
+          "docs", 
+          "package.json", 
+          "composer.json", 
+          "Cargo.toml"
+        ]
+      }
+    ]
   ],
   "tagFormat": "${version}"
 }
