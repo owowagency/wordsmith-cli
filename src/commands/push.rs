@@ -8,8 +8,8 @@ use super::{Execute, helpers::TargetFile};
 
 impl PushArgs {
     async fn try_push_all<'a>(
-        &self, 
-        client: &WordsmithClient, 
+        &self,
+        client: &WordsmithClient,
         target: &TargetFile<'a>,
         locales: &[String],
         dry_run: bool,
@@ -20,10 +20,10 @@ impl PushArgs {
             let task = self.try_push_locale(
                 client,
                 target,
-                locale.clone(), 
+                locale.clone(),
                 dry_run,
             );
-            pull_tasks.push(task);            
+            pull_tasks.push(task);
         }
 
         try_join_all(pull_tasks).await?;
@@ -32,8 +32,8 @@ impl PushArgs {
     }
 
     async fn try_push_locale<'a>(
-        &self, 
-        client: &WordsmithClient, 
+        &self,
+        client: &WordsmithClient,
         target: &TargetFile<'a>,
         locale: String,
         dry_run: bool,
@@ -41,12 +41,15 @@ impl PushArgs {
         let output_path = target.target_path(&locale);
         info!("Pushing {:?} [{}]", output_path, locale);
         if !dry_run {
-            let result = {
-                let data = target.read(&locale).await?;
-                client.push(
-                    self.global.env.project_id, 
-                    &target.target, 
-                    &locale, 
+            let result = match target.read(&locale).await {
+                Err(_) => {
+                    error!("Failed to read locale {:?} from {}", locale, output_path);
+                    Ok(())
+                }
+                Ok(data) => client.push(
+                    self.global.env.project_id,
+                    &target.target,
+                    &locale,
                     &data,
                     self.overwrite,
                     self.verify,
@@ -54,10 +57,8 @@ impl PushArgs {
             };
 
             if result.is_err() {
-                error!("Failed to push locale {:?} from {}", locale, output_path)
+                error!("Failed to push locale {:?} to {}", locale, output_path);
             }
-
-            return result;
         }
 
         Ok(())
@@ -75,9 +76,9 @@ impl Execute for PushArgs {
         if targets.is_empty() {
             return Ok(());
         }
-        
+
         let client = WordsmithClient::new(Some(&self.access_token()))?;
-        
+
         info!("Fetching project info for: {}", self.global.env.project_id);
         let project = client.info(self.global.env.project_id).await?;
         let mut pull_tasks = vec![];
@@ -89,7 +90,7 @@ impl Execute for PushArgs {
                 let file_target = TargetFile::from(&project, &local_target);
                 self.try_push_all(&client, &file_target, &locales, self.dry_run).await
             };
-            
+
             pull_tasks.push(task);
         }
 
