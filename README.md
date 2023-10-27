@@ -6,6 +6,20 @@
 
 ## Commands
 
+### List
+
+Lists all projects in the scope of the access token, which can be configured in `wordsmith.yml`, see [Configuration](#configuration)
+
+```shell
+wordsmith list --env=wordsmith.yml
+```
+
+| short | long | type | default | description |
+|---|---|---|---|---|
+| `-e` | `--env` | `String` | `wordsmith.yml` | Path to the configuration file |
+| | `--access-token` | `String` | `wordsmith.yml` | Access token |
+| | `--verbose` | `Bool` | `false` | Enables verbose logging |
+
 ### Pull
 
 Pulls translation files from the API, translation files can be configured in `wordsmith.yml`, see [Configuration](#configuration)
@@ -84,10 +98,10 @@ targets:
     # [Optional] The file to use when pulling/pushing the default locale
     default-locale-override: locales/values/strings-app.xml
     # Types of this target, possible values: push, pull
-    types: 
+    types:
       - push
       - pull
-    # Format of the file, possible values: 
+    # Format of the file, possible values:
     # - apple-strings (iOS Localizable string files)
     # - android-strings (XML Android string files)
     # - csv
@@ -95,14 +109,14 @@ targets:
     # - json
     file-type: android-strings
     # [Optional] tags to include when pulling/pushing this file
-    tags: 
+    tags:
       - app
   - file: locales/values-{locale}/strings-library.xml
     default-locale-override: locales/values/strings-library.xml
-    types: 
+    types:
       - push
       - pull
     file-type: android-strings
-    tags: 
+    tags:
       - library
 ```

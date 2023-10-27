@@ -2,6 +2,7 @@ use async_trait::async_trait;
 
 use crate::{cli::Command, api::WordsmithError};
 
+mod list;
 mod pull;
 mod push;
 mod helpers;
@@ -15,6 +16,7 @@ pub trait Execute {
 impl Execute for Command {
     async fn execute(&self) -> Result<(), WordsmithError> {
         match self {
+            Command::List(args) => args.execute().await?,
             Command::Pull(args) => args.execute().await?,
             Command::Push(args) => args.execute().await?,
         };
