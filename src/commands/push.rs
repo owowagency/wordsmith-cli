@@ -59,8 +59,6 @@ impl PushArgs {
             if result.is_err() {
                 error!("Failed to push locale {:?} from {}", locale, output_path);
             }
-
-            return result;
         }
 
         Ok(())
