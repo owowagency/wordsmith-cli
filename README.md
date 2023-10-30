@@ -58,6 +58,7 @@ Any remaining properties will be passed on to the API when pushing or pulling.
 |---|---|---|
 | `file` | `String` | Path to the translation file, `{locale}` will be replaced with the locale e.g. `values-{locale}/strings.xml` will become `values-en/strings.xml` |
 | `default-locale-override` | `String?` | Path override for the default locale, this may be useful on Android where the default strings are stored in `values/` instead of `values-{locale}/` |
+| `locales` | `String[]` | Locales to pull/push, defaults to existing project locales |
 | `types` | `(pull \| push)[]` | Enables push and/or pull for this target |
 | `file-type` | `String` | The file format of the translation file, see [Supported formats](#supported-formats) |
 | `tags` | `String[]` | Pull only translations with given tags or attach tags to pushed translations, defaults to `[]` |
@@ -84,10 +85,10 @@ targets:
     # [Optional] The file to use when pulling/pushing the default locale
     default-locale-override: locales/values/strings-app.xml
     # Types of this target, possible values: push, pull
-    types: 
+    types:
       - push
       - pull
-    # Format of the file, possible values: 
+    # Format of the file, possible values:
     # - apple-strings (iOS Localizable string files)
     # - android-strings (XML Android string files)
     # - csv
@@ -95,14 +96,14 @@ targets:
     # - json
     file-type: android-strings
     # [Optional] tags to include when pulling/pushing this file
-    tags: 
+    tags:
       - app
   - file: locales/values-{locale}/strings-library.xml
     default-locale-override: locales/values/strings-library.xml
-    types: 
+    types:
       - push
       - pull
     file-type: android-strings
-    tags: 
+    tags:
       - library
 ```
