@@ -1,7 +1,85 @@
 # Wordsmith CLI
 
-## Github action
+1. [Usage](#usage)
+    1. [NPM](#npm)
+    1. [Composer](#composer)
+    1. [Github actions](#github-actions)
+1. [Commands](#commands)
+    1. [Pull](#pull)
+    1. [Push](#push)
+1. [Configuration](#configuration)
+    1. [Top level](#top-level)
+    1. [Targets](#targets)
+    1. [Supported formats](#supported-formats)
+1. [Example configuration](#example-configuration)
 
+## Usage
+
+### NPM
+
+You can use the CLI using `npx` or by installing it with your preferred package manager:
+
+```shell
+npx @owowagency/wordsmith-cli --help
+
+# npm
+npm install -g @owowagency/wordsmith-cli
+# yarn
+yarn global add @owowagency/wordsmith-cli
+# pnpm
+pnpm install -g @owowagency/wordsmith-cli
+
+wordsmith --help
+```
+
+You can also install it per project and use it as a script:
+
+```shell
+# npm
+npm install @owowagency/wordsmith-cli
+# yarn
+yarn add @owowagency/wordsmith-cli
+# pnpm
+pnpm install @owowagency/wordsmith-cli
+```
+
+Then add the following to your `package.json`:
+
+```json
+{
+    "scripts": {
+        "wordsmith": "wordsmith"
+    }
+}
+```
+
+### Composer
+
+To use the CLI using composer, install it using:
+
+```shell
+composer require owowagency/wordsmith-cli
+```
+
+Then add the following to your `composer.json`:
+
+```json
+{
+    "scripts": {
+        "wordsmith": "wordsmith"
+    }
+}
+```
+
+To pass on arguments to the CLI, use the `--` separator
+
+```shell
+composer wordsmith -- --help
+```
+
+### Github actions
+
+To use the CLI in Github actions, use the
 [wordsmith-action](https://github.com/owowagency/wordsmith-action)
 
 ## Commands
@@ -70,6 +148,10 @@ Any remaining properties will be passed on to the API when pushing or pulling.
 - `json`
 - `csv`
 - `i18next` (i18next)
+- `po` (Gettext)
+- `apple-xliff`
+- `angular-xliff`
+- `symfony-xliff`
 
 ## Example Configuration
 
