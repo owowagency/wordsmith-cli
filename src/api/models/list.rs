@@ -11,7 +11,7 @@ pub struct ProjectData {
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ListResponse {
+pub struct ListProjectsResponse {
     pub id: u32,
     pub name: String,
     pub projects: Vec<ProjectData>,
