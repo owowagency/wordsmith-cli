@@ -5,6 +5,7 @@
     1. [Composer](#composer)
     1. [Github actions](#github-actions)
 1. [Commands](#commands)
+    1. [List projects](#list-projects)
     1. [Pull](#pull)
     1. [Push](#push)
 1. [Configuration](#configuration)
