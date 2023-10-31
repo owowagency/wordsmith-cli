@@ -5,17 +5,17 @@ use comfy_table::{Table, ContentArrangement};
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 
-use crate::{cli::{ListArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}};
+use crate::{cli::{ListProjectsArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}};
 
 use super::Execute;
 
 #[async_trait]
-impl Execute for ListArgs {
+impl Execute for ListProjectsArgs {
     async fn execute(&self) -> Result<(), WordsmithError> {
         let client = WordsmithClient::new(Some(&self.access_token()))?;
 
         info!("Fetching projects");
-        let company = client.list().await?;
+        let company = client.list_projects().await?;
 
         info!("Found {} projects for \"{}\"", company.projects.len(), company.name);
 

@@ -11,7 +11,7 @@ use crate::environment::AccessToken;
 use self::models::error::ApiError;
 
 pub mod models;
-pub mod list;
+pub mod list_projects;
 pub mod pull;
 pub mod push;
 pub mod info;

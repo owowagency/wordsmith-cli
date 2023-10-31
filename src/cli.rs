@@ -11,7 +11,7 @@ pub struct CommandLine {
 
 #[derive(Subcommand)]
 pub enum Command {
-    List(ListArgs),
+    ListProjects(ListProjectsArgs),
     Pull(PullArgs),
     Push(PushArgs),
 }
@@ -28,7 +28,7 @@ pub struct GlobalArgs {
 }
 
 #[derive(Debug, Args)]
-pub struct ListArgs {
+pub struct ListProjectsArgs {
     #[clap(flatten)]
     pub global: GlobalArgs,
 }
@@ -51,7 +51,7 @@ pub trait HasAccessToken {
     fn access_token(&self) -> AccessToken;
 }
 
-impl HasAccessToken for ListArgs {
+impl HasAccessToken for ListProjectsArgs {
     fn access_token(&self) -> AccessToken {
         match &self.global.access_token {
             Some(token) => token.clone(),

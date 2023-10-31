@@ -23,7 +23,7 @@ async fn main() {
 impl CommandLine {
     pub fn setup_logging(&self) {
         let filter = match &self.command {
-            Command::List(args) if args.global.verbose => LevelFilter::Debug,
+            Command::ListProjects(args) if args.global.verbose => LevelFilter::Debug,
             Command::Pull(args) if args.global.verbose => LevelFilter::Debug,
             Command::Push(args) if args.global.verbose => LevelFilter::Debug,
             _ => LevelFilter::Info,

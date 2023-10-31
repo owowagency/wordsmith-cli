@@ -6,12 +6,12 @@
 
 ## Commands
 
-### List
+### List Projects
 
 Lists all projects in the scope of the access token, which can be configured in `wordsmith.yml`, see [Configuration](#configuration)
 
 ```shell
-wordsmith list --env=wordsmith.yml
+wordsmith list-projects --env=wordsmith.yml
 ```
 
 | short | long | type | default | description |
