@@ -71,8 +71,6 @@ Then add the following to your `composer.json`:
 }
 ```
 
-To pass on arguments to the CLI, use the `--` separator
-
 ```shell
 composer wordsmith -- --help
 ```
