@@ -1,12 +1,11 @@
 #![cfg_attr(feature = "strict", deny(warnings))]
 
-use std::process::exit;
+use api::HasExitCode;
 use clap::Parser;
 use cli::{CommandLine, Command};
 use commands::Execute;
 use log::{error, LevelFilter};
-
-use crate::api::HasExitCode;
+use std::process::exit;
 
 mod cli;
 mod environment;
