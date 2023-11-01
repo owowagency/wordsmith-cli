@@ -1,9 +1,11 @@
 #![cfg_attr(feature = "strict", deny(warnings))]
 
+use api::HasExitCode;
 use clap::Parser;
 use cli::{CommandLine, Command};
 use commands::Execute;
 use log::{error, LevelFilter};
+use std::process::exit;
 
 mod cli;
 mod environment;
@@ -16,7 +18,10 @@ async fn main() {
     app.setup_logging();
     match app.command.execute().await {
         Ok(_) => {},
-        Err(err) => error!("{err}"),
+        Err(err) => {
+            error!("{err}");
+            exit(err.exit_code());
+        },
     }
 }
 

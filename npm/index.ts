@@ -54,7 +54,9 @@ if (!existsSync(path)) {
     linkSync(binary.path, path);
 }
 
-spawnSync(path, commandArgs, {
+const result = spawnSync(path, commandArgs, {
     shell: true,
     stdio: 'inherit',
 });
+
+process.exit(result.status ?? 0);

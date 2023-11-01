@@ -36,6 +36,16 @@ pub enum WordsmithError {
     Io(String),
 }
 
+pub trait HasExitCode {
+    fn exit_code(&self) -> i32;
+}
+
+impl HasExitCode for WordsmithError {
+    fn exit_code(&self) -> i32 {
+        1
+    }
+}
+
 impl From<InvalidHeaderValue> for WordsmithError {
     fn from(value: InvalidHeaderValue) -> Self {
         WordsmithError::Init(value.to_string())
