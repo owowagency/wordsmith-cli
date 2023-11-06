@@ -6,6 +6,7 @@ use cli::{CommandLine, Command};
 use commands::Execute;
 use log::{error, LevelFilter};
 use std::process::exit;
+use std::io::Write;
 
 mod cli;
 mod environment;

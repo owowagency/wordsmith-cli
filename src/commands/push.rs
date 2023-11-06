@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use futures::future::try_join_all;
-use log::{info, error};
+use log::{info, error, debug};
 
 use crate::{cli::{PushArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType}, commands::helpers::get_locales};
 
@@ -56,8 +56,11 @@ impl PushArgs {
                 ).await
             };
 
-            if result.is_err() {
-                error!("Failed to push locale {:?} from {}", locale, output_path);
+            match result {
+                Err(e) => {
+                    error!("Failed to push {:?} [{}], cause: {}", output_path, locale, e);
+                }
+                Ok(_) => {},
             }
         }
 
@@ -79,7 +82,7 @@ impl Execute for PushArgs {
 
         let client = WordsmithClient::new(Some(&self.access_token()))?;
 
-        info!("Fetching project info for: {}", self.global.env.project_id);
+        debug!("Fetching project info for: {}", self.global.env.project_id);
         let project = client.info(self.global.env.project_id).await?;
         let mut pull_tasks = vec![];
 

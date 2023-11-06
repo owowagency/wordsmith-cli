@@ -25,7 +25,6 @@ impl WordsmithClient {
             query.push((key.clone(), any.to_string()));
         }  
 
-        println!("query: {query:?}");
         let request = self.client.get(url).query(&query).build()?;
         let response: PullResponse = self.execute(request).await?;
         self.download(&response.url).await
