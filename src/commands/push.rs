@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use futures::future::try_join_all;
-use log::{info, error, debug};
+use log::{info, error, debug, warn};
 
 use crate::{cli::{PushArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType}, commands::helpers::get_locales};
 
@@ -43,7 +43,7 @@ impl PushArgs {
         if !dry_run {
             let result = match target.read(&locale).await {
                 Err(_) => {
-                    error!("Failed to read locale {:?} from {}", locale, output_path);
+                    warn!("Failed to read locale {:?} from {}", locale, output_path);
                     Ok(())
                 }
                 Ok(data) => client.push(
@@ -57,11 +57,9 @@ impl PushArgs {
             };
 
             match result {
-                Err(e) => {
-                    error!("Failed to push {:?} [{}], cause: {}", output_path, locale, e);
-                }
+                Err(e) => return Err(WordsmithError::Push { file: output_path, locale, cause: Box::new(e) }),
                 Ok(_) => {},
-            }
+            };
         }
 
         Ok(())

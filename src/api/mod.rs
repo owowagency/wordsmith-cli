@@ -34,6 +34,8 @@ pub enum WordsmithError {
     Api(StatusCode, ApiError),
     #[error("IO Error, reason: {0}")]
     Io(String),
+    #[error("Failed to push {file:?} [{locale}], cause: {cause}")]
+    Push { file: String, locale: String, cause: Box<WordsmithError> }
 }
 
 pub trait HasExitCode {
