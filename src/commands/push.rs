@@ -56,9 +56,8 @@ impl PushArgs {
                 ).await
             };
 
-            match result {
-                Err(e) => return Err(WordsmithError::Push { file: output_path, locale, cause: Box::new(e) }),
-                Ok(_) => {},
+            if let Err(e) = result {
+               return Err(WordsmithError::Push { file: output_path, locale, cause: Box::new(e) });
             };
         }
 
