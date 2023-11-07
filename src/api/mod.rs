@@ -15,7 +15,18 @@ pub mod pull;
 pub mod push;
 pub mod info;
 
-const USER_AGENT: &'static str = env!("USER_AGENT");
+const WORDSMITH_VERSION: &'static str = env!("WORDSMITH_VERSION");
+
+fn create_user_agent() -> String {
+    let platform = match (env::consts::OS, env::consts::ARCH) {
+        ("macos", arch) => format!("Mac OS X; {arch}"),
+        ("linux", arch) => format!("Linux; {arch}"),
+        ("windows", arch) => format!("Windows NT; {arch}"),
+        (os, arch) => format!("{os}; {arch}")
+    };
+
+    format!("Wordsmith-cli/{WORDSMITH_VERSION} ({platform})")
+}
 
 pub struct WordsmithClient {
     headers: HeaderMap,
@@ -71,7 +82,7 @@ impl From<reqwest::Error> for WordsmithError {
 
 impl WordsmithClient {
     pub fn new(token: Option<&AccessToken>) -> Result<Self> {
-        let user_agent = HeaderValue::from_str(USER_AGENT)?;
+        let user_agent = HeaderValue::from_str(&create_user_agent())?;
         let accept = HeaderValue::from_str("application/json")?;
         let mut headers = HeaderMap::new();
         headers.append("User-Agent", user_agent);
