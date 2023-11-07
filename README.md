@@ -5,6 +5,7 @@
     1. [Composer](#composer)
     1. [Github actions](#github-actions)
 1. [Commands](#commands)
+    1. [List projects](#list-projects)
     1. [Pull](#pull)
     1. [Push](#push)
 1. [Configuration](#configuration)
@@ -81,6 +82,20 @@ To use the CLI in Github actions, use the
 [wordsmith-action](https://github.com/owowagency/wordsmith-action)
 
 ## Commands
+
+### List Projects
+
+Lists all projects in the scope of the access token, which can be configured in `wordsmith.yml`, see [Configuration](#configuration)
+
+```shell
+wordsmith list-projects --env=wordsmith.yml
+```
+
+| short | long | type | default | description |
+|---|---|---|---|---|
+| `-e` | `--env` | `String` | `wordsmith.yml` | Path to the configuration file |
+| | `--access-token` | `String` | `wordsmith.yml` | Access token |
+| | `--verbose` | `Bool` | `false` | Enables verbose logging |
 
 ### Pull
 

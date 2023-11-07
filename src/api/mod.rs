@@ -11,6 +11,7 @@ use crate::environment::AccessToken;
 use self::models::error::ApiError;
 
 pub mod models;
+pub mod list_projects;
 pub mod pull;
 pub mod push;
 pub mod info;
@@ -83,7 +84,7 @@ impl WordsmithClient {
             .default_headers(headers.clone())
             .build()
             .map_err(|op| WordsmithError::Init(op.to_string()))?;
-        
+
         Ok(Self {
             client,
             headers,
@@ -127,7 +128,7 @@ impl WordsmithClient {
         } else {
             env!("WORDSMITH_BASE_URL").to_owned()
         };
-        
+
         Ok(Url::parse(&base_url)?.join(&url)?)
     }
 
@@ -178,7 +179,7 @@ impl WordsmithClient {
         if content_type.contains("application/json") {
             return match response.json().await {
                 Ok(error) => WordsmithError::Api(status, error),
-                Err(err) => WordsmithError::Api(status, ApiError { 
+                Err(err) => WordsmithError::Api(status, ApiError {
                     message: err.to_string(),
                     errors: vec![],
                 })
@@ -191,7 +192,7 @@ impl WordsmithClient {
                 errors: vec![],
             }),
             Err(err) => err.into(),
-        } 
+        }
     }
 }
 

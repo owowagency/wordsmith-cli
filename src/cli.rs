@@ -9,8 +9,9 @@ pub struct CommandLine {
     pub command: Command,
 }
 
-#[derive(Subcommand)] 
+#[derive(Subcommand)]
 pub enum Command {
+    ListProjects(ListProjectsArgs),
     Pull(PullArgs),
     Push(PushArgs),
 }
@@ -24,6 +25,12 @@ pub struct GlobalArgs {
     /// Enable verbose logging
     #[arg(long, default_value_t = false)]
     pub verbose: bool
+}
+
+#[derive(Debug, Args)]
+pub struct ListProjectsArgs {
+    #[clap(flatten)]
+    pub global: GlobalArgs,
 }
 
 #[derive(Debug, Args)]
@@ -42,6 +49,15 @@ pub struct PushArgs {
 
 pub trait HasAccessToken {
     fn access_token(&self) -> AccessToken;
+}
+
+impl HasAccessToken for ListProjectsArgs {
+    fn access_token(&self) -> AccessToken {
+        match &self.global.access_token {
+            Some(token) => token.clone(),
+            None => self.global.env.token.clone(),
+        }
+    }
 }
 
 impl HasAccessToken for PushArgs {
