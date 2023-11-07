@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, collections::HashMap};
 
 use log::{error, log_enabled, debug, warn, info};
 use reqwest::{ClientBuilder, header::{HeaderMap, HeaderValue, InvalidHeaderValue}, Client, StatusCode, Request, Response, Url};
@@ -31,10 +31,12 @@ pub enum WordsmithError {
     Init(String),
     #[error("HTTP Client error, reason: {0}")]
     Http(String),
-    #[error("API Error, status: {0}, message: {1}")]
+    #[error("API Error [{0}] {1}")]
     Api(StatusCode, ApiError),
     #[error("IO Error, reason: {0}")]
     Io(String),
+    #[error("Failed to push {file:?} [{locale}], cause: {cause}")]
+    Push { file: String, locale: String, cause: Box<WordsmithError> }
 }
 
 pub trait HasExitCode {
@@ -181,7 +183,7 @@ impl WordsmithClient {
                 Ok(error) => WordsmithError::Api(status, error),
                 Err(err) => WordsmithError::Api(status, ApiError {
                     message: err.to_string(),
-                    errors: vec![],
+                    errors: HashMap::default(),
                 })
             };
         }
@@ -189,7 +191,7 @@ impl WordsmithClient {
         match response.text().await {
             Ok(text) => WordsmithError::Api(status, ApiError {
                 message: text,
-                errors: vec![],
+                errors: HashMap::default(),
             }),
             Err(err) => err.into(),
         }

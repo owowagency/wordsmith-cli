@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use futures::future::try_join_all;
-use log::{info, error};
+use log::{info, error, debug};
 
 use crate::{cli::{PullArgs, HasAccessToken}, api::{WordsmithClient, WordsmithError}, environment::{Target, TargetType}, commands::helpers::get_locales};
 
@@ -72,7 +72,7 @@ impl Execute for PullArgs {
         
         let client = WordsmithClient::new(Some(&self.access_token()))?;
         
-        info!("Fetching project info for: {}", self.global.env.project_id);
+        debug!("Fetching project info for: {}", self.global.env.project_id);
         let project = client.info(self.global.env.project_id).await?;
         let mut pull_tasks = vec![];
 
