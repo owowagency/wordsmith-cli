@@ -10,17 +10,15 @@ fn main() {
         let base_url = std::env::var("WORDSMITH_BASE_URL").expect("Missing WORDSMITH_BASE_URL env variable!");
         let version = std::env::var("WORDSMITH_CLI_VERSION").expect("Missing WORDSMITH_CLI_VERSION env variable!");
         let commit_hash = get_commit_hash().expect("Failed to get commit hash");
-        let version = format!("{} [{}]", version, commit_hash);
-        let user_agent = format!("Wordsmith CLI {}", version);
+        let full_version = format!("{} [{}]", version, commit_hash);
         println!("cargo:rustc-env=WORDSMITH_BASE_URL={}", base_url);
-        println!("cargo:rustc-env=USER_AGENT={}", user_agent);
-        println!("cargo:rustc-env=CARGO_PKG_VERSION={}", version);
+        println!("cargo:rustc-env=WORDSMITH_VERSION={}", version);
+        println!("cargo:rustc-env=CARGO_PKG_VERSION={}", full_version);
     } else {
         let base_url =  std::env::var("WORDSMITH_BASE_URL").unwrap_or("http://localhost:8000".to_string());
         let version = "0.0.0";
-        let user_agent = format!("Wordsmith CLI {}", version);
         println!("cargo:rustc-env=WORDSMITH_BASE_URL={}", base_url);
-        println!("cargo:rustc-env=USER_AGENT={}", user_agent);
+        println!("cargo:rustc-env=WORDSMITH_VERSION={}", version);
         println!("cargo:rustc-env=CARGO_PKG_VERSION={}", version);
     }
 }
